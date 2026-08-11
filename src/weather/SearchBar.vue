@@ -12,7 +12,6 @@ const searchCityEvent = (e) => {
 
 <template>
     <div>
-        <label>도시 검색</label>
         <input type="text" :value="props.searchQuery" @input="searchCityEvent">
         <p>검색 중인 도시: {{ props.searchQuery }}</p>
     </div>

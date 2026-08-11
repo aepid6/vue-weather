@@ -1,8 +1,9 @@
 <script setup>
 import {ref, computed, watch, watchEffect, onUnmounted} from 'vue'
-import SEARCH from '@/weather/weatherSearch.vue'
-import CARD from '@/weather/weatherCard.vue'
-import SELECTED from '@/weather/weatherSelected.vue'
+import BASEDASHBOARD from '@/weather/BaseDashboardCard.vue'
+import SEARCH from '@/weather/SearchBar.vue'
+import CARD from '@/weather/WeatherCard.vue'
+import SELECTED from '@/weather/WeatherSelected.vue'
 
 const currentTime = ref(new Date())
 const searchQuery = ref('')
@@ -54,7 +55,21 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <SEARCH v-model:searchQuery="searchQuery"/>
-    <CARD :weatherList="FilteredWeatherList" v-model:selectedCityInfo="selectedCityInfo"/>
-    <SELECTED :key="selectedCityInfo" :selectedCityInfo="selectedCityInfo" />
+  <BASEDASHBOARD>
+    <template v-slot:header>
+      <p>도시 검색</p>
+    </template>
+    <template v-slot:content>
+      <SEARCH v-model:searchQuery="searchQuery"/>
+    </template>
+  </BASEDASHBOARD>
+  <BASEDASHBOARD>
+    <template v-slot:header>
+      <p>지역별 날씨 현황</p>
+    </template>
+    <template v-slot:content>
+      <CARD :weatherList="FilteredWeatherList" v-model:selectedCityInfo="selectedCityInfo"/>
+    </template>
+  </BASEDASHBOARD>
+  <SELECTED :key="selectedCityInfo" :selectedCityInfo="selectedCityInfo" />
 </template>

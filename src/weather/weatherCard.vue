@@ -16,7 +16,6 @@ const showDetail = (cityName, status) => {
 
 <template>
     <div>
-        <p>지역별 날씨 현황</p>
         <div v-if="weatherList?.length == 0">
             <p>검색 결과가 일치하는 도시가 없습니다.</p>
         </div>
