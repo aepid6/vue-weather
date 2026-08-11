@@ -17,15 +17,20 @@ const showDetail = (cityName, status) => {
 <template>
     <div>
         <p>지역별 날씨 현황</p>
-        <div v-for="city in props.weatherList" :key="city.id" @click="showSelect(city.name)">
-            <div>
-                <p>{{ city.name }} ({{ city.status }})</p>
-                <p>현재 기온: {{ city.temp }}</p>
-                <span v-if="city.temp > 25" class="bg-red">더움</span>
-                <span v-else class="bg-skyblue">선선함</span>
-            </div>
-            <div>
-                <button @click.stop="showDetail(city.name, city.status)">상세보기</button>
+        <div v-if="weatherList?.length == 0">
+            <p>검색 결과가 일치하는 도시가 없습니다.</p>
+        </div>
+        <div v-else>
+            <div v-for="city in props.weatherList" :key="city.id" @click="showSelect(city.name)">
+                <div>
+                    <p>{{ city.name }} ({{ city.status }})</p>
+                    <p>현재 기온: {{ city.temp }}</p>
+                    <span v-if="city.temp > 25" class="bg-red">더움</span>
+                    <span v-else class="bg-skyblue">선선함</span>
+                </div>
+                <div>
+                    <button @click.stop="showDetail(city.name, city.status)">상세보기</button>
+                </div>
             </div>
         </div>
     </div>
