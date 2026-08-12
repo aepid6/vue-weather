@@ -19,6 +19,9 @@ export const getAllWeatherAPI = async() => {
         latitude: latitudes,
         longitude: longitudes,
         current: 'temperature_2m,weather_code',
+        hourly: 'temperature_2m',
+        past_hours: 3,
+        forecast_hours: 9,
         timezone: 'Asia/Seoul',
         apikey: import.meta.env.WEATHER_API_KEY
       }
@@ -34,6 +37,9 @@ export const getWeatherAPI = async (city) => {
       latitude: city.lat,
       longitude: city.lon,
       current: 'temperature_2m,weather_code',
+      hourly: 'temperature_2m',
+      past_hours: 3,
+      forecast_hours: 9,
       timezone: 'Asia/Seoul'
     }
   })

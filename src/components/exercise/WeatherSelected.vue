@@ -1,50 +1,54 @@
 <script setup>
-import { ref } from 'vue'
-import { getWeatherAPI } from '@/services/weatherAPI'
-import { CITIES } from '@/constants/cities'
+import { computed } from 'vue'
 import { WEATHER_CODES } from '@/constants/weatherCode'
 
 const props = defineProps({
-    selectedCityId: String
+    selectedCityId: String,
+    city: {
+        type: Object,
+        default: null
+    },
+    backLabel: {
+        type: String,
+        default: '도시 목록으로'
+    }
 })
-
-const weather = ref({})
-const time = ref('')
-const selectedCity = CITIES.find(city => city.id === props.selectedCityId)
 
 const emit = defineEmits(['update:selectedCityId'])
 const backInfo = () => {
     emit('update:selectedCityId', '')
 }
 
-const loadWeather = async (city) => {
-  try {
-    const response = await getWeatherAPI(city)
-    weather.value = response.current
+const temperatureChangeText = () => {
+    const change = props.city?.temperatureChange
 
-    time.value = new Date(response.current.time).toLocaleString("ko-KR", {
+    if (!Number.isFinite(change)) return '비교 정보 없음'
+    if (change === 0) return '1시간 전과 동일'
+
+    return `1시간 전보다 ${change > 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(1)}°C`
+}
+
+const observedTime = computed(() => {
+  if (!props.city?.observedAt) return '정보를 불러오는 중'
+
+  return new Date(props.city.observedAt).toLocaleString("ko-KR", {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
     })
-  } catch (err) {
-    console.error('날씨 데이터를 불러오지 못했습니다.', err)
-  }
-}
-
-loadWeather(selectedCity)
+})
 </script>
 <template>
-    <section class="selected-weather" aria-live="polite">
+    <section v-if="props.city" class="selected-weather" aria-live="polite">
         <div class="selected-sky" aria-hidden="true">
             <span class="sky-orbit orbit-one"></span>
             <span class="sky-orbit orbit-two"></span>
             <span class="sky-star star-one">✦</span>
             <span class="sky-star star-two">✦</span>
             <span class="sky-star star-three">·</span>
-            <span class="weather-symbol">{{ WEATHER_CODES[weather.weather_code]?.icon || '✦' }}</span>
+            <span class="weather-symbol">{{ WEATHER_CODES[props.city.weatherCode]?.icon || '✦' }}</span>
             <span class="wind-line line-one"></span>
             <span class="wind-line line-two"></span>
         </div>
@@ -52,15 +56,18 @@ loadWeather(selectedCity)
             <span class="notice-icon" aria-hidden="true">✦</span>
             <div>
                 <p class="selected-label">NOW OBSERVING</p>
-                <h3>{{ selectedCity.name }}</h3>
+                <h3>{{ props.city.name }}</h3>
                 <div class="selected-readings">
-                    <span>기준시간 {{ time || '정보를 불러오는 중' }}</span>
-                    <strong>{{ weather.temperature_2m ?? '--' }}<small>°C</small></strong>
+                    <span>기준시간 {{ observedTime }}</span>
+                    <strong>{{ props.city.currentTemp ?? '--' }}<small>°C</small></strong>
                 </div>
+                <p class="temperature-change" :class="{ down: props.city.temperatureChange < 0 }">
+                    {{ temperatureChangeText() }}
+                </p>
             </div>
         </div>
         <div class="selected-actions">
-            <button @click="backInfo"><span aria-hidden="true">←</span> 도시 목록으로</button>
+            <button @click="backInfo"><span aria-hidden="true">←</span> {{ props.backLabel }}</button>
         </div>
     </section>
 </template>

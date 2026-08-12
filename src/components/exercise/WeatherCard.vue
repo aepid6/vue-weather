@@ -20,6 +20,13 @@ const handleDetail = (cityId) => {
         params: {cityId}
     })
 }
+
+const temperatureChangeText = (city) => {
+    if (city.temperatureChange === null || city.temperatureChange === undefined) return '비교 정보 없음'
+    if (city.temperatureChange === 0) return '1시간 전과 동일'
+
+    return `1시간 전보다 ${city.temperatureChange > 0 ? '▲' : '▼'} ${Math.abs(city.temperatureChange).toFixed(1)}°C`
+}
 </script>
 
 <template>
@@ -38,8 +45,9 @@ const handleDetail = (cityId) => {
                 </div>
                 <div class="city-reading">
                     <p class="temperature">{{ city.currentTemp }}<small>&nbsp;&nbsp;°c</small></p>
-                    <span class="temperature-feel" v-if="city.currentTemp > 25">더움</span>
-                    <span class="temperature-feel" v-else>선선함</span>
+                    <p class="temperature-change" :class="{ down: city.temperatureChange < 0 }">
+                        {{ temperatureChangeText(city) }}
+                    </p>
                 </div>
                 <button class="detail-button" @click.stop="handleDetail(city.id)">상세보기 <span aria-hidden="true">→</span></button>
             </div>
