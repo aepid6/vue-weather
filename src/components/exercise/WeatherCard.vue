@@ -36,8 +36,8 @@ const handleDetail = (cityId) => {
                     </div>
                 </div>
                 <div class="city-reading">
-                    <p class="temperature">{{ city.temp }}<small>°</small></p>
-                    <span class="temperature-feel" v-if="city.temp > 25">더움</span>
+                    <p class="temperature">{{ city.currentTemp }}<small>°</small></p>
+                    <span class="temperature-feel" v-if="city.currentTemp > 25">더움</span>
                     <span class="temperature-feel" v-else>선선함</span>
                 </div>
                 <button class="detail-button" @click.stop="handleDetail(city.id)">상세보기 <span aria-hidden="true">→</span></button>
