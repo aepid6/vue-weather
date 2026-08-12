@@ -37,16 +37,30 @@ const loadWeather = async (city) => {
 loadWeather(selectedCity)
 </script>
 <template>
-    <div class="selected-notice">
-        <span class="notice-icon" aria-hidden="true">✦</span>
-        <div>
-            <h3>{{ selectedCity.name }}</h3>
-            <span>기준시간 {{ time }}</span>&nbsp;
-            <span>{{ weather.temperature_2m }}</span>&nbsp;
-            <span>{{ WEATHER_CODES[weather.weather_code]?.icon }}</span>
+    <section class="selected-weather" aria-live="polite">
+        <div class="selected-sky" aria-hidden="true">
+            <span class="sky-orbit orbit-one"></span>
+            <span class="sky-orbit orbit-two"></span>
+            <span class="sky-star star-one">✦</span>
+            <span class="sky-star star-two">✦</span>
+            <span class="sky-star star-three">·</span>
+            <span class="weather-symbol">{{ WEATHER_CODES[weather.weather_code]?.icon || '✦' }}</span>
+            <span class="wind-line line-one"></span>
+            <span class="wind-line line-two"></span>
         </div>
-    </div>
-    <div>
-        <button @click="backInfo">뒤로가기</button>
-    </div>
+        <div class="selected-notice">
+            <span class="notice-icon" aria-hidden="true">✦</span>
+            <div>
+                <p class="selected-label">NOW OBSERVING</p>
+                <h3>{{ selectedCity.name }}</h3>
+                <div class="selected-readings">
+                    <span>기준시간 {{ time || '정보를 불러오는 중' }}</span>
+                    <strong>{{ weather.temperature_2m ?? '--' }}<small>°C</small></strong>
+                </div>
+            </div>
+        </div>
+        <div class="selected-actions">
+            <button @click="backInfo"><span aria-hidden="true">←</span> 도시 목록으로</button>
+        </div>
+    </section>
 </template>
