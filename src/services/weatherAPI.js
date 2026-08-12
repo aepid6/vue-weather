@@ -1,7 +1,9 @@
 import axios from "axios"
 import { CITIES } from "@/constants/cities"
 
-export const getWeatherAPI = async() => {
+const weatherAPIURL = 'https://api.open-meteo.com/v1/forecast'
+
+export const getAllWeatherAPI = async() => {
   const latitudes = CITIES
     .map(city => city.lat)
     .join(',')
@@ -11,7 +13,7 @@ export const getWeatherAPI = async() => {
     .join(',')
 
   const response = await axios.get(
-    'https://api.open-meteo.com/v1/forecast',
+    weatherAPIURL,
     {
       params: {
         latitude: latitudes,
@@ -24,4 +26,17 @@ export const getWeatherAPI = async() => {
   )
 
   return response
+}
+
+export const getWeatherAPI = async (city) => {
+  const response = await axios.get(weatherAPIURL, {
+    params: {
+      latitude: city.lat,
+      longitude: city.lon,
+      current: 'temperature_2m,weather_code',
+      timezone: 'Asia/Seoul'
+    }
+  })
+
+  return response.data
 }

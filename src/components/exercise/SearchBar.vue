@@ -3,10 +3,10 @@ const props = defineProps({
     searchQuery: String
 })
 
-const emitQuery = defineEmits(['update:searchQuery'])
+const emitQuery = defineEmits(['update-searchQuery'])
 
 const searchCityEvent = (e) => {
-    emitQuery('update:searchQuery', e.target.value)
+    emitQuery('update-searchQuery', e.target.value)
 }
 </script>
 

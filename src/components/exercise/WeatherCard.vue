@@ -5,15 +5,16 @@ const router = useRouter()
 
 const props = defineProps({
     weatherList: Array,
-    selectedCityInfo: String
+    selectedCityId: String
 })
-const emit = defineEmits(['update:selectedCityInfo'])
+const emit = defineEmits(['update:selectedCityId'])
 
-const showSelect = (cityName) => {
-    emit('update:selectedCityInfo', cityName)
+const showSelect = (cityId) => {
+    emit('update:selectedCityId', cityId)
 }
 
 const handleDetail = (cityId) => {
+    console.log(cityId)
     router.push({
         name: 'Detail',
         params: {cityId}
@@ -27,7 +28,7 @@ const handleDetail = (cityId) => {
             <p class="empty-state">검색 결과가 일치하는 도시가 없습니다.</p>
         </div>
         <div v-else class="weather-grid">
-            <div class="weather-item" v-for="city in props.weatherList" :key="city.id" @click="showSelect(city.name)">
+            <div class="weather-item" v-for="city in props.weatherList" :key="city.id" @click="showSelect(city.id)">
                 <div class="city-meta">
                     <span class="weather-icon" aria-hidden="true">{{ city.status === '맑음' ? '☀' : city.status === '비' ? '☂' : city.status === '구름' ? '☁' : '☁' }}</span>
                     <div>
