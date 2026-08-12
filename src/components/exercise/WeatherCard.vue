@@ -37,7 +37,7 @@ const handleDetail = (cityId) => {
                     </div>
                 </div>
                 <div class="city-reading">
-                    <p class="temperature">{{ city.currentTemp }}<small>°</small></p>
+                    <p class="temperature">{{ city.currentTemp }}<small>&nbsp;&nbsp;°c</small></p>
                     <span class="temperature-feel" v-if="city.currentTemp > 25">더움</span>
                     <span class="temperature-feel" v-else>선선함</span>
                 </div>
