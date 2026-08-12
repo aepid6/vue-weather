@@ -1,9 +1,22 @@
-<script setup>
-import WEATHER from '@/weather/weatherParent.vue'
-</script>
+<script setup></script>
 
 <template>
-<WEATHER />
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark">☼</span>
+      <span>Weatherly</span>
+    </div>
+    <div class="header-nav">
+      <nav aria-label="주요 메뉴">
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-content">
+    <RouterView />
+  </main>
 </template>
 
 <style scoped></style>
