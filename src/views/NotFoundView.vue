@@ -1,12 +1,16 @@
+<script setup>
+import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
+</script>
+
 <template>
     <section class="not-found-page">
         <div class="not-found-orbit" aria-hidden="true">
             <span class="orbit-ring ring-one"></span>
             <span class="orbit-ring ring-two"></span>
-            <span class="lost-cloud">☁</span>
-            <span class="lost-star star-a">✦</span>
-            <span class="lost-star star-b">✦</span>
-            <span class="lost-star star-c">·</span>
+            <WEATHERGRAPHIC class="lost-cloud" type="cloudy" size="large" />
+            <span class="lost-star star-a"></span>
+            <span class="lost-star star-b"></span>
+            <span class="lost-star star-c"></span>
         </div>
         <p class="not-found-kicker">SIGNAL NOT FOUND</p>
         <h1>구름 너머로<br><em>길을 잃었어요.</em></h1>

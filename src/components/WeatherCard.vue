@@ -1,5 +1,8 @@
 <script setup>
 import {useRouter} from 'vue-router'
+import CITYSCENE from '@/components/WeatherCityScene.vue'
+import { formatTemperature } from '@/utils/weather'
+import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 
 const router = useRouter()
 
@@ -36,15 +39,16 @@ const temperatureChangeText = (city) => {
         </div>
         <div v-else class="weather-grid">
             <div class="weather-item" v-for="city in props.weatherList" :key="city.id" @click="showSelect(city.id)">
+                <CITYSCENE :city="city" compact />
                 <div class="city-meta">
-                    <span class="weather-icon" aria-hidden="true">{{ city.status === '맑음' ? '☀' : city.status === '비' ? '☂' : city.status === '구름' ? '☁' : '☁' }}</span>
+                    <span class="weather-icon"><WEATHERGRAPHIC :status="city.weatherStatus" size="small" /></span>
                     <div>
                         <p class="city-name">{{ city.name }}</p>
                         <p class="weather-status">{{ city.status }}</p>
                     </div>
                 </div>
                 <div class="city-reading">
-                    <p class="temperature">{{ city.currentTemp }}<small>&nbsp;&nbsp;°c</small></p>
+                    <p class="temperature">{{ formatTemperature(city.currentTemp) }}<small>&nbsp;&nbsp;°c</small></p>
                     <p class="temperature-change" :class="{ down: city.temperatureChange < 0 }">
                         {{ temperatureChangeText(city) }}
                     </p>

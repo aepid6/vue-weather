@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   weatherList: {
     type: Array,
@@ -46,13 +48,27 @@ const temperatureColor = (temperature) => {
   if (temperature < 27) return '#ffe18b'
   return '#ff8d79'
 }
+
+const referenceTime = computed(() => {
+  const latestObservedAt = props.weatherList
+    .map((city) => city.observedAt)
+    .filter(Boolean)
+    .sort((first, second) => new Date(second) - new Date(first))[0]
+
+  if (!latestObservedAt) return '기준 시각 확인 중'
+
+  return `${new Date(latestObservedAt).toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })} 기준`
+})
 </script>
 
 <template>
   <section class="temperature-map" aria-label="전국 기온 지도">
     <div class="map-heading">
       <div>
-        <p class="map-kicker">LIVE TEMPERATURE</p>
         <h2>전국 기온 지도</h2>
       </div>
       <p>도시를 선택해 상세 날씨를 확인하세요</p>
@@ -77,7 +93,7 @@ const temperatureColor = (temperature) => {
         </button>
         </div>
       </div>
-      <p class="map-note">KOREA WEATHER NETWORK · UPDATED LIVE</p>
+      <p class="map-note">{{ referenceTime }}</p>
     </div>
 
     <div class="map-legend" aria-label="기온 범례">
