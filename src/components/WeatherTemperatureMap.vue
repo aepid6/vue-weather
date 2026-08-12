@@ -13,6 +13,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['select-city'])
+const koreaMapURL = `${import.meta.env.BASE_URL}korea-provinces.svg`
 
 // SVG의 광역시 경계 중심점과 실제 위도·경도를 대조해 계산한 보정 계수입니다.
 // 새 도시를 CITIES에 추가하면 lat/lon만으로 SVG viewBox(800 × 760) 좌표가 계산됩니다.
@@ -76,7 +77,7 @@ const referenceTime = computed(() => {
     <div class="map-stage">
       <div class="map-grid" aria-hidden="true"></div>
       <div class="map-projection">
-        <img class="korea-map-shape" src="/korea-provinces.svg" alt="" />
+        <img class="korea-map-shape" :src="koreaMapURL" alt="" />
         <div class="map-city-layer">
         <button
           v-for="city in props.weatherList"
