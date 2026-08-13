@@ -92,7 +92,7 @@ hourlyWeatherAPI.interceptors.response.use(
           severity: 'error',
           summary: '예보 API 호출 한도 도달',
           detail: '오늘 API 호출이 한계에 다다랐습니다.',
-          life: 6000,
+          closable: true,
         })
       }
     }

@@ -491,6 +491,30 @@ to { transform: translateY(0) scale(1); opacity: 1; }
 .scene-light { width: 74px; height: 74px; right: 9%; top: 10%; border-radius: 50%; opacity: 0.25; background: radial-gradient(circle, var(--theme-accent), transparent 70%); animation: scene-light-breathe 4.5s ease-in-out infinite; }
 .scene-cloud { width: 56px; height: 11px; left: -65px; top: 20%; border-radius: 50%; opacity: 0.18; background: linear-gradient(90deg, transparent, #e8fbff, transparent); filter: blur(3px); animation: scene-cloud-pass 11s linear infinite; }
 .scene-cloud-two { top: 34%; animation-duration: 16s; animation-delay: -7s; }
+.small-city-effect { z-index: 5; inset: auto 2% 2%; height: 62%; opacity: 0; filter: drop-shadow(0 5px 8px #0005); transition: opacity 0.5s ease; }
+.small-city-effect::before { content: ''; width: 96%; height: 28%; position: absolute; left: 2%; bottom: 0; border-top: 2px solid color-mix(in srgb, var(--theme-accent) 48%, transparent); border-radius: 50%; background: radial-gradient(ellipse at center bottom, color-mix(in srgb, var(--theme-accent) 25%, var(--theme-stage)), transparent 72%); filter: blur(0.4px); }
+.scene-small-city .small-city-effect { opacity: 1; }
+.small-city-house { position: absolute; bottom: 8%; display: block; border: 1px solid color-mix(in srgb, var(--theme-accent) 52%, transparent); border-radius: 2px 2px 4px 4px; background: linear-gradient(135deg, color-mix(in srgb, var(--theme-stage) 72%, #6b4f42), color-mix(in srgb, var(--theme-panel) 72%, #3d302c)); box-shadow: inset 0 -3px color-mix(in srgb, var(--theme-accent) 10%, transparent), 0 4px 7px #0005; transform-origin: center bottom; animation: small-city-house-arrive 0.8s cubic-bezier(0.16, 0.85, 0.3, 1) both; }
+.small-city-house::before { content: ''; position: absolute; left: -5px; right: -5px; top: -10px; height: 14px; clip-path: polygon(50% 0, 100% 80%, 92% 100%, 8% 100%, 0 80%); background: color-mix(in srgb, var(--theme-accent) 48%, #4f3a35); box-shadow: 0 0 7px color-mix(in srgb, var(--theme-accent) 24%, transparent); }
+.small-city-house b { width: 7px; height: 8px; position: absolute; left: 7px; top: 7px; display: block; border: 1px solid color-mix(in srgb, var(--theme-accent) 60%, white); border-radius: 1px; background: #ffd989; box-shadow: 0 0 8px #ffc85f; animation: small-city-window-glow 3.2s ease-in-out infinite; }
+.small-city-house em { width: 5px; height: 13px; position: absolute; right: 5px; bottom: 0; display: block; border-radius: 2px 2px 0 0; background: color-mix(in srgb, var(--theme-stage) 75%, #281b1b); }
+.small-city-house--one { width: 30px; height: 29px; left: 8%; animation-delay: 0.08s; }
+.small-city-house--two { width: 39px; height: 37px; left: 36%; animation-delay: 0.18s; }
+.small-city-house--two b { width: 8px; height: 9px; left: 8px; top: 9px; animation-delay: -1.2s; }
+.small-city-house--two::after { content: ''; width: 5px; height: 13px; position: absolute; right: 7px; top: -16px; background: color-mix(in srgb, var(--theme-accent) 32%, #4a3732); }
+.small-city-house--three { width: 32px; height: 27px; right: 8%; animation-delay: 0.28s; }
+.small-city-house--three b { left: auto; right: 7px; animation-delay: -2.1s; }
+.small-city-smoke { width: 11px; height: 11px; position: absolute; left: 65%; bottom: 66%; border-radius: 50%; opacity: 0; background: color-mix(in srgb, var(--theme-text-muted) 58%, transparent); filter: blur(2px); animation: small-city-smoke-rise 4.2s ease-out infinite; }
+.small-city-smoke--two { animation-delay: -2.1s; }
+.small-city-light { width: 4px; height: 4px; position: absolute; border-radius: 50%; background: color-mix(in srgb, var(--theme-accent) 55%, #ffe7a3); box-shadow: 0 0 5px currentColor, 0 0 11px color-mix(in srgb, currentColor 65%, transparent); animation: small-city-firefly 4.6s ease-in-out infinite; }
+.small-city-light--one { left: 12%; bottom: 18%; animation-delay: -0.7s; }
+.small-city-light--two { left: 31%; bottom: 36%; animation-delay: -2.8s; }
+.small-city-light--three { left: 53%; bottom: 15%; animation-delay: -1.6s; }
+.small-city-light--four { right: 23%; bottom: 43%; animation-delay: -3.7s; }
+.small-city-light--five { right: 8%; bottom: 24%; animation-delay: -2.1s; }
+.scene-small-city.scene-city .scene-buildings { height: 39%; transform: scaleX(0.82); transform-origin: center bottom; }
+.city-scene.compact.scene-small-city .small-city-effect { right: 0; left: 2%; bottom: 0; height: 72%; opacity: 1; }
+.city-scene.compact.scene-small-city .small-city-light { display: none; }
 .scene-buildings, .scene-mountains, .scene-heritage, .scene-coast, .scene-island { inset: auto 0 0; height: 48%; opacity: 0; }
 .scene-city .scene-buildings, .scene-mountain .scene-mountains, .scene-heritage .scene-heritage, .scene-coast .scene-coast, .scene-island .scene-island { opacity: 0.5; }
 .building { position: absolute; bottom: 0; border: 1px solid color-mix(in srgb, var(--theme-accent) 22%, transparent); border-bottom: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--theme-stage) 90%, transparent), color-mix(in srgb, var(--theme-panel) 74%, transparent)); box-shadow: inset 4px 0 color-mix(in srgb, var(--theme-accent) 5%, transparent); animation: building-rise 0.7s cubic-bezier(0.16, 0.85, 0.3, 1) both; }
@@ -538,6 +562,24 @@ to { transform: translateY(0) scale(1); opacity: 1; }
 }
 @keyframes scene-cloud-pass {
 to { transform: translateX(360px); }
+}
+@keyframes small-city-firefly {
+0%, 100% { opacity: 0.18; transform: translate(0, 3px) scale(0.72); }
+38% { opacity: 0.92; transform: translate(5px, -5px) scale(1.08); }
+68% { opacity: 0.45; transform: translate(-3px, -9px) scale(0.86); }
+}
+@keyframes small-city-house-arrive {
+from { opacity: 0; transform: translateY(18px) scaleY(0.72); }
+to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+@keyframes small-city-window-glow {
+0%, 100% { opacity: 0.35; filter: brightness(0.75); }
+45%, 72% { opacity: 1; filter: brightness(1.3); }
+}
+@keyframes small-city-smoke-rise {
+0% { opacity: 0; transform: translate(0, 7px) scale(0.55); }
+28% { opacity: 0.48; }
+100% { opacity: 0; transform: translate(14px, -30px) scale(1.7); }
 }
 @keyframes building-rise {
 from { transform: translateY(100%); opacity: 0; }
@@ -1058,7 +1100,7 @@ to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
 50% { transform: scale(1.4); opacity: 1; }
 }
 /* API 상태 알림 */
-.weather-toast { width: max-content; max-width: calc(100vw - 32px); }
+.weather-toast { width: max-content; max-width: calc(100vw - 32px); position: fixed !important; z-index: 1200; left: 50% !important; right: auto !important; top: 18px !important; transform: translateX(-50%); }
 .weather-toast-message { margin: 0; overflow: hidden; color: #9f1239; border: 1px solid #fecdd3; border-radius: 15px; background: #fff; box-shadow: 0 20px 55px #4c051933, inset 0 1px #fff; animation: toast-drop-in 0.3s cubic-bezier(0.16, 0.85, 0.3, 1) both; }
 .weather-toast-content { padding: 15px 16px; display: flex; align-items: flex-start; gap: 11px; }
 .weather-toast-alert-icon { width: 24px; height: 24px; display: grid; place-items: center; flex: 0 0 auto; color: #fff; border-radius: 50%; background: #e11d48; font: 900 14px 'DM Mono', monospace; box-shadow: 0 4px 12px #e11d4840; }

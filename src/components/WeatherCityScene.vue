@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { getCitySceneType, isSmallCity } from '@/constants/cityScene'
 
 const props = defineProps({
   city: {
@@ -9,24 +10,28 @@ const props = defineProps({
   compact: Boolean,
 })
 
-const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
-const mountainCities = ['춘천', '원주', '태백', '홍천', '충주', '제천', '영주', '문경', '김천']
-const heritageCities = ['전주', '경주', '안동', '공주', '남원']
-
-const sceneType = computed(() => {
-  if (['제주', '서귀포'].includes(props.city.name)) return 'island'
-  if (heritageCities.includes(props.city.name)) return 'heritage'
-  if (portCities.includes(props.city.name)) return 'port'
-  if (mountainCities.includes(props.city.name)) return 'mountain'
-  return 'city'
-})
+const sceneType = computed(() => getCitySceneType(props.city.id))
+const hasSmallCityEffect = computed(() => isSmallCity(props.city.id))
 </script>
 
 <template>
-  <div class="city-scene" :class="[`scene-${sceneType}`, { compact }]" aria-hidden="true">
+  <div class="city-scene" :class="[`scene-${sceneType}`, { compact, 'scene-small-city': hasSmallCityEffect }]" aria-hidden="true">
     <span class="scene-light"></span>
     <span class="scene-cloud scene-cloud-one"></span>
     <span class="scene-cloud scene-cloud-two"></span>
+
+    <div class="small-city-effect">
+      <span class="small-city-house small-city-house--one"><b></b></span>
+      <span class="small-city-house small-city-house--two"><b></b><em></em></span>
+      <span class="small-city-house small-city-house--three"><b></b></span>
+      <span class="small-city-smoke small-city-smoke--one"></span>
+      <span class="small-city-smoke small-city-smoke--two"></span>
+      <i class="small-city-light small-city-light--one"></i>
+      <i class="small-city-light small-city-light--two"></i>
+      <i class="small-city-light small-city-light--three"></i>
+      <i class="small-city-light small-city-light--four"></i>
+      <i class="small-city-light small-city-light--five"></i>
+    </div>
 
     <div class="scene-buildings">
       <i class="building building-one"></i>

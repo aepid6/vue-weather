@@ -8,6 +8,7 @@ import shortsIcon from '@/assets/clothes/shorts.svg'
 import pantsIcon from '@/assets/clothes/pants.svg'
 import jacketIcon from '@/assets/clothes/jacket.svg'
 import coatIcon from '@/assets/clothes/coat.svg'
+import { getCitySceneType } from '@/constants/cityScene'
 
 const props = defineProps({
   city: {
@@ -16,18 +17,18 @@ const props = defineProps({
   },
 })
 
-const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
-const mountainCities = ['춘천', '원주', '태백', '홍천', '충주', '제천', '영주', '문경', '김천']
-const heritageCities = ['전주', '경주', '안동', '공주', '남원']
+const citySceneLabels = {
+  island: '섬과 바람',
+  heritage: '역사 도시',
+  port: '항구 도시',
+  mountain: '산악 도시',
+  city: '도심 풍경',
+}
 
 const cityLandmark = computed(() => {
-  const name = props.city?.name
+  const type = getCitySceneType(props.city?.id)
 
-  if (['제주', '서귀포'].includes(name)) return { type: 'island', label: '섬과 바람' }
-  if (heritageCities.includes(name)) return { type: 'heritage', label: '역사 도시' }
-  if (portCities.includes(name)) return { type: 'port', label: '항구 도시' }
-  if (mountainCities.includes(name)) return { type: 'mountain', label: '산악 도시' }
-  return { type: 'city', label: '도심 풍경' }
+  return { type, label: citySceneLabels[type] }
 })
 
 const temperatureChangeText = computed(() => {
@@ -187,16 +188,16 @@ const fallbackWeatherItems = computed(() => [
 
 const weatherEmoji = (status) =>
   ({
-    맑음: '☀️',
+    '맑음': '☀️',
     '대체로 맑음': '🌤️',
     '구름 조금': '⛅',
-    흐림: '☁️',
-    안개: '🌫️',
-    이슬비: '🌦️',
-    비: '🌧️',
+    '흐림': '☁️',
+    '안개': '🌫️',
+    '이슬비': '🌦️',
+    '비': '🌧️',
     '강한 비': '🌧️',
-    눈: '🌨️',
-    뇌우: '⛈️',
+    '눈': '🌨️',
+    '뇌우': '⛈️',
   })[status] || '☁️'
 
 const clothingIconClass = (icon) =>

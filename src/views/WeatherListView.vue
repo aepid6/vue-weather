@@ -176,9 +176,6 @@ const FilteredWeatherList = computed(() => {
         <p class="eyebrow"><span class="cities-live-signal" aria-hidden="true"></span>KOREA WEATHER NETWORK</p>
         <h1>가까운 도시부터<br /><em>오늘의 날씨</em>를 만나보세요.</h1>
         <p class="cities-intro-description">지역과 도시를 검색하고, 현재 기온부터 체감 날씨까지 한곳에서 비교할 수 있어요.</p>
-        <div class="cities-intro-meta" aria-label="날씨 데이터 상태">
-          <span><i class="cities-meta-clock" aria-hidden="true"></i>{{ referenceTime }}</span>
-        </div>
       </div>
       <div class="cities-intro-visual" aria-hidden="true">
         <i class="cities-intro-star cities-intro-star--one"></i>
