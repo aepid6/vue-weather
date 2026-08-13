@@ -2,11 +2,7 @@
 // vue 메서드
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 // js 파일 (상수, 함수)
-import {
-  getAllCurrentWeatherAPI,
-  getAllHourlyWeatherAPI,
-  getSunTimeAPI
-} from '@/services/weatherAPI'
+import { getAllCurrentWeatherAPI, getAllHourlyWeatherAPI, getSunTimeAPI } from '@/services/weatherAPI'
 import { mergeWeatherData } from '@/utils/weather'
 import { useWeatherLoading } from '@/composables/useWeatherLoading'
 import { useThemeStore } from '@/stores/theme'
@@ -23,12 +19,7 @@ const themeStore = useThemeStore()
 const selectedCityId = ref('')
 const currentLocationCityId = ref('seoul')
 const weatherList = ref([...CITIES])
-const {
-  loading,
-  loadingProgress,
-  updateLoading,
-  completeLoading
-} = useWeatherLoading()
+const { loading, loadingProgress, updateLoading, completeLoading } = useWeatherLoading()
 const error = ref('')
 const sunTimes = ref(null)
 const selectedCity = computed(() => weatherList.value.find((city) => city.id === selectedCityId.value))
@@ -44,17 +35,11 @@ const loadWeather = async () => {
     if (!isInitialLoading) return
 
     if (completedCities < CITIES.length) {
-      updateLoading(
-        10 + ((completedCities / CITIES.length) * 62),
-        `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`
-      )
+      updateLoading(10 + (completedCities / CITIES.length) * 62, `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`)
       return
     }
 
-    updateLoading(
-      hourlyReady ? 90 : 76,
-      hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.'
-    )
+    updateLoading(hourlyReady ? 90 : 76, hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.')
   }
 
   try {
@@ -66,15 +51,15 @@ const loadWeather = async () => {
         onProgress: ({ completed }) => {
           completedCities = completed
           updateRequestProgress()
-        }
+        },
       }),
       getAllHourlyWeatherAPI({
         force: !isInitialLoading,
         onProgress: ({ completed, failed }) => {
           hourlyReady = completed === 1 && !failed
           updateRequestProgress()
-        }
-      })
+        },
+      }),
     ])
     const currentResponse = currentResult.status === 'fulfilled' ? currentResult.value : null
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null
@@ -107,7 +92,7 @@ const loadCurrentLocation = () => {
     (position) => {
       const coordinates = {
         lat: position.coords.latitude,
-        lon: position.coords.longitude
+        lon: position.coords.longitude,
       }
       const nearestCity = findNearestCity(coordinates)
 
@@ -119,8 +104,8 @@ const loadCurrentLocation = () => {
     {
       enableHighAccuracy: false,
       timeout: 10000,
-      maximumAge: 15 * 60 * 1000
-    }
+      maximumAge: 15 * 60 * 1000,
+    },
   )
 }
 
@@ -157,7 +142,7 @@ const loadSunTimes = async (cityId) => {
 
     sunTimes.value = {
       sunrise: daily.sunrise?.[0],
-      sunset: daily.sunset?.[0]
+      sunset: daily.sunset?.[0],
     }
     updateTimeTheme()
   } catch (err) {
@@ -172,16 +157,18 @@ onMounted(() => {
 watch(currentLocationCityId, loadSunTimes, { immediate: true })
 
 // 타이머 (15분 단위 업데이트)
-const timer = setInterval(() => {
-  currentTime.value = new Date()
-  loadWeather()
-  updateTimeTheme()
-}, 15 * 60 * 1000)
+const timer = setInterval(
+  () => {
+    currentTime.value = new Date()
+    loadWeather()
+    updateTimeTheme()
+  },
+  15 * 60 * 1000,
+)
 // Unmounted시 타이머 중지
 onUnmounted(() => {
   clearInterval(timer)
 })
-
 </script>
 
 <template>
@@ -191,17 +178,9 @@ onUnmounted(() => {
   <section v-else class="weather-dashboard home-weather-dashboard">
     <CURRENTLOCATION :city="currentLocation" />
     <div class="map-dashboard-layout" :class="{ 'has-selected-city': selectedCityId }">
-      <TEMPERATUREMAP
-        :weatherList="weatherList"
-        :currentLocationId="currentLocation?.id"
-        @select-city="selectedCityId = $event"
-      />
+      <TEMPERATUREMAP :weatherList="weatherList" :currentLocationId="currentLocation?.id" @select-city="selectedCityId = $event" />
       <aside v-if="selectedCity" class="map-detail-modal" aria-label="선택한 도시 날씨 정보">
-        <CITYPANEL
-          :city="selectedCity"
-          close-label="지도 상세 정보 닫기"
-          @close="selectedCityId = ''"
-        />
+        <CITYPANEL :city="selectedCity" close-label="지도 상세 정보 닫기" @close="selectedCityId = ''" />
       </aside>
     </div>
   </section>

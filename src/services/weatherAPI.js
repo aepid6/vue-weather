@@ -18,13 +18,13 @@ const currentWeatherAPI = axios.create({
   params: {
     appid: import.meta.env.WEATHER_API_KEY,
     units: 'metric',
-    lang: 'kr'
-  }
+    lang: 'kr',
+  },
 })
 
 const hourlyWeatherAPI = axios.create({
   baseURL: hourlyWeatherAPIURL,
-  timeout: requestTimeout
+  timeout: requestTimeout,
 })
 
 const readWeatherCache = (key) => {
@@ -59,11 +59,13 @@ const currentProgressListeners = new Set()
 const hourlyProgressListeners = new Set()
 
 const emitCurrentProgress = (cached = false) => {
-  currentProgressListeners.forEach((listener) => listener({
-    completed: cached ? CITIES.length : completedCurrentRequests,
-    total: CITIES.length,
-    cached
-  }))
+  currentProgressListeners.forEach((listener) =>
+    listener({
+      completed: cached ? CITIES.length : completedCurrentRequests,
+      total: CITIES.length,
+      cached,
+    }),
+  )
 }
 
 const emitHourlyProgress = (completed, cached = false, failed = false) => {
@@ -90,21 +92,19 @@ hourlyWeatherAPI.interceptors.response.use(
           severity: 'error',
           summary: '예보 API 호출 한도 도달',
           detail: '오늘 API 호출이 한계에 다다랐습니다.',
-          life: 6000
+          life: 6000,
         })
       }
     }
 
     return Promise.reject(error)
-  }
+  },
 )
 
 const toLocalISOString = (timestamp, timezoneOffset = 0) => {
   if (!timestamp) return ''
 
-  return new Date((timestamp + timezoneOffset) * 1000)
-    .toISOString()
-    .replace('Z', '')
+  return new Date((timestamp + timezoneOffset) * 1000).toISOString().replace('Z', '')
 }
 
 const normalizeCurrentWeatherData = (weatherData) => {
@@ -116,7 +116,7 @@ const normalizeCurrentWeatherData = (weatherData) => {
     current: {
       time: observedAt,
       temperature_2m: currentTemp,
-      weather_status: weatherStatus
+      weather_status: weatherStatus,
     },
     openWeatherDescription: weatherData.weather?.[0]?.description ?? '',
     details: {
@@ -128,10 +128,10 @@ const normalizeCurrentWeatherData = (weatherData) => {
       windSpeed: weatherData.wind?.speed ?? null,
       windDirection: weatherData.wind?.deg ?? null,
       visibility: weatherData.visibility ?? null,
-      cloudiness: weatherData.clouds?.all ?? null
+      cloudiness: weatherData.clouds?.all ?? null,
     },
     sunrise: toLocalISOString(weatherData.sys?.sunrise, weatherData.timezone),
-    sunset: toLocalISOString(weatherData.sys?.sunset, weatherData.timezone)
+    sunset: toLocalISOString(weatherData.sys?.sunset, weatherData.timezone),
   }
 }
 
@@ -139,8 +139,8 @@ const requestCurrentWeather = async (city) => {
   const response = await currentWeatherAPI.get('', {
     params: {
       lat: city.lat,
-      lon: city.lon
-    }
+      lon: city.lon,
+    },
   })
 
   return normalizeCurrentWeatherData(response.data)
@@ -166,22 +166,22 @@ export const getAllCurrentWeatherAPI = async ({ force = false, onProgress } = {}
             completedCurrentRequests += 1
             emitCurrentProgress()
           }
+        }),
+      )
+        .then((results) => {
+          const data = results.map((result, index) => (result.status === 'fulfilled' ? result.value : (currentWeatherCache?.data?.[index] ?? null)))
+
+          if (data.every((weather) => weather === null)) {
+            throw new Error('현재 날씨 정보를 가져오지 못했습니다.')
+          }
+
+          const response = { data }
+          currentWeatherCache = writeWeatherCache(currentWeatherCacheKey, response)
+          return response
         })
-      ).then((results) => {
-        const data = results.map((result, index) => result.status === 'fulfilled'
-          ? result.value
-          : currentWeatherCache?.data?.[index] ?? null)
-
-        if (data.every((weather) => weather === null)) {
-          throw new Error('현재 날씨 정보를 가져오지 못했습니다.')
-        }
-
-        const response = { data }
-        currentWeatherCache = writeWeatherCache(currentWeatherCacheKey, response)
-        return response
-      }).finally(() => {
-        currentWeatherBatchRequest = null
-      })
+        .finally(() => {
+          currentWeatherBatchRequest = null
+        })
     } else {
       emitCurrentProgress()
     }
@@ -207,14 +207,14 @@ export const getAirPollutionAPI = async (city) => {
     params: {
       lat: city.lat,
       lon: city.lon,
-      appid: import.meta.env.WEATHER_API_KEY
-    }
+      appid: import.meta.env.WEATHER_API_KEY,
+    },
   })
 
   return {
     aqi: response.data.list?.[0]?.main?.aqi ?? null,
     pm25: response.data.list?.[0]?.components?.pm2_5 ?? null,
-    pm10: response.data.list?.[0]?.components?.pm10 ?? null
+    pm10: response.data.list?.[0]?.components?.pm10 ?? null,
   }
 }
 
@@ -231,25 +231,28 @@ export const getAllHourlyWeatherAPI = async ({ force = false, onProgress } = {})
 
     if (!hourlyWeatherBatchRequest) {
       emitHourlyProgress(0)
-      hourlyWeatherBatchRequest = hourlyWeatherAPI.get('', {
-        params: {
-          latitude: CITIES.map((city) => city.lat).join(','),
-          longitude: CITIES.map((city) => city.lon).join(','),
-          hourly: 'temperature_2m,weather_code',
-          daily: 'temperature_2m_max,temperature_2m_min',
-          past_hours: 3,
-          forecast_hours: 9,
-          forecast_days: 1,
-          timezone: 'Asia/Seoul'
-        }
-      }).then((response) => {
-        const normalizedResponse = { data: response.data }
-        hourlyWeatherCache = writeWeatherCache(hourlyWeatherCacheKey, normalizedResponse)
-        emitHourlyProgress(1)
-        return normalizedResponse
-      }).finally(() => {
-        hourlyWeatherBatchRequest = null
-      })
+      hourlyWeatherBatchRequest = hourlyWeatherAPI
+        .get('', {
+          params: {
+            latitude: CITIES.map((city) => city.lat).join(','),
+            longitude: CITIES.map((city) => city.lon).join(','),
+            hourly: 'temperature_2m,weather_code',
+            daily: 'temperature_2m_max,temperature_2m_min',
+            past_hours: 3,
+            forecast_hours: 9,
+            forecast_days: 1,
+            timezone: 'Asia/Seoul',
+          },
+        })
+        .then((response) => {
+          const normalizedResponse = { data: response.data }
+          hourlyWeatherCache = writeWeatherCache(hourlyWeatherCacheKey, normalizedResponse)
+          emitHourlyProgress(1)
+          return normalizedResponse
+        })
+        .finally(() => {
+          hourlyWeatherBatchRequest = null
+        })
     }
 
     return await hourlyWeatherBatchRequest
@@ -277,8 +280,8 @@ export const getHourlyWeatherAPI = async (city) => {
       past_hours: 3,
       forecast_hours: 9,
       forecast_days: 1,
-      timezone: 'Asia/Seoul'
-    }
+      timezone: 'Asia/Seoul',
+    },
   })
 
   return response.data
@@ -289,6 +292,6 @@ export const getSunTimeAPI = async (city) => {
 
   return {
     sunrise: weatherData.sunrise ? [weatherData.sunrise] : [],
-    sunset: weatherData.sunset ? [weatherData.sunset] : []
+    sunset: weatherData.sunset ? [weatherData.sunset] : [],
   }
 }

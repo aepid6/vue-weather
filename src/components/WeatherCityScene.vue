@@ -4,9 +4,9 @@ import { computed } from 'vue'
 const props = defineProps({
   city: {
     type: Object,
-    required: true
+    required: true,
   },
-  compact: Boolean
+  compact: Boolean,
 })
 
 const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
@@ -20,15 +20,10 @@ const sceneType = computed(() => {
   if (mountainCities.includes(props.city.name)) return 'mountain'
   return 'city'
 })
-
 </script>
 
 <template>
-  <div
-    class="city-scene"
-    :class="[`scene-${sceneType}`, { compact }]"
-    aria-hidden="true"
-  >
+  <div class="city-scene" :class="[`scene-${sceneType}`, { compact }]" aria-hidden="true">
     <span class="scene-light"></span>
     <span class="scene-cloud scene-cloud-one"></span>
     <span class="scene-cloud scene-cloud-two"></span>

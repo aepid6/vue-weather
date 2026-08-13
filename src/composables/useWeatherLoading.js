@@ -51,6 +51,6 @@ export const useWeatherLoading = () => {
     loading,
     loadingProgress,
     updateLoading,
-    completeLoading
+    completeLoading,
   }
 }

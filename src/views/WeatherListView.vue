@@ -27,12 +27,7 @@ const selectedCityId = ref('')
 const sortOption = ref('distance')
 const currentCoordinates = ref({ lat: CITIES[0].lat, lon: CITIES[0].lon })
 const weatherList = ref([...CITIES])
-const {
-  loading,
-  loadingProgress,
-  updateLoading,
-  completeLoading
-} = useWeatherLoading()
+const { loading, loadingProgress, updateLoading, completeLoading } = useWeatherLoading()
 const favoritesStore = useFavoritesStore()
 const themeStore = useThemeStore()
 const { favoriteCityIds } = storeToRefs(favoritesStore)
@@ -40,12 +35,10 @@ const { resolvedTheme } = storeToRefs(themeStore)
 const { toggleFavorite } = favoritesStore
 
 const selectedCity = computed(() => weatherList.value.find((city) => city.id === selectedCityId.value))
-const favoriteCities = computed(() => favoriteCityIds.value
-  .map((cityId) => weatherList.value.find((city) => city.id === cityId))
-  .filter(Boolean))
+const favoriteCities = computed(() => favoriteCityIds.value.map((cityId) => weatherList.value.find((city) => city.id === cityId)).filter(Boolean))
 
 const introSky = computed(() => ({
-  state: resolvedTheme.value === 'night' ? 'night' : 'day'
+  state: resolvedTheme.value === 'night' ? 'night' : 'day',
 }))
 
 const referenceTime = computed(() => {
@@ -59,7 +52,7 @@ const referenceTime = computed(() => {
   return `${new Date(latestObservedAt).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
   })} 기준`
 })
 
@@ -73,17 +66,11 @@ const loadWeather = async () => {
     if (!isInitialLoading) return
 
     if (completedCities < CITIES.length) {
-      updateLoading(
-        10 + ((completedCities / CITIES.length) * 62),
-        `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`
-      )
+      updateLoading(10 + (completedCities / CITIES.length) * 62, `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`)
       return
     }
 
-    updateLoading(
-      hourlyReady ? 90 : 76,
-      hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.'
-    )
+    updateLoading(hourlyReady ? 90 : 76, hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.')
   }
 
   try {
@@ -95,15 +82,15 @@ const loadWeather = async () => {
         onProgress: ({ completed }) => {
           completedCities = completed
           updateRequestProgress()
-        }
+        },
       }),
       getAllHourlyWeatherAPI({
         force: !isInitialLoading,
         onProgress: ({ completed, failed }) => {
           hourlyReady = completed === 1 && !failed
           updateRequestProgress()
-        }
-      })
+        },
+      }),
     ])
     const currentResponse = currentResult.status === 'fulfilled' ? currentResult.value : null
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null
@@ -126,7 +113,7 @@ const loadCurrentLocation = () => {
     (position) => {
       currentCoordinates.value = {
         lat: position.coords.latitude,
-        lon: position.coords.longitude
+        lon: position.coords.longitude,
       }
     },
     () => {
@@ -135,8 +122,8 @@ const loadCurrentLocation = () => {
     {
       enableHighAccuracy: false,
       timeout: 10000,
-      maximumAge: 15 * 60 * 1000
-    }
+      maximumAge: 15 * 60 * 1000,
+    },
   )
 }
 
@@ -145,9 +132,12 @@ onMounted(() => {
   loadCurrentLocation()
 })
 
-const timer = setInterval(() => {
-  loadWeather()
-}, 15 * 60 * 1000)
+const timer = setInterval(
+  () => {
+    loadWeather()
+  },
+  15 * 60 * 1000,
+)
 // Unmounted시 타이머 중지
 onUnmounted(() => {
   clearInterval(timer)
@@ -159,27 +149,21 @@ const regionName = (city) => city.province || '특별시·광역시'
 const regions = computed(() => ['전체', ...new Set(weatherList.value.map(regionName))])
 
 const RegionFilteredWeatherList = computed(() => {
-  return selectedRegion.value === '전체'
-    ? weatherList.value
-    : weatherList.value.filter((weather) => regionName(weather) === selectedRegion.value)
+  return selectedRegion.value === '전체' ? weatherList.value : weatherList.value.filter((weather) => regionName(weather) === selectedRegion.value)
 })
 
 // 검색기능
 const FilteredWeatherList = computed(() => {
-  const filteredList = RegionFilteredWeatherList.value.filter((weather) =>
-    matchesCityName(weather.name, searchQuery.value),
-  )
+  const filteredList = RegionFilteredWeatherList.value.filter((weather) => matchesCityName(weather.name, searchQuery.value))
 
   return [...filteredList].sort((firstCity, secondCity) => {
     if (sortOption.value === 'name') {
       return firstCity.name.localeCompare(secondCity.name, 'ko')
     }
 
-    return calculateDistance(currentCoordinates.value, firstCity)
-      - calculateDistance(currentCoordinates.value, secondCity)
+    return calculateDistance(currentCoordinates.value, firstCity) - calculateDistance(currentCoordinates.value, secondCity)
   })
 })
-
 </script>
 
 <template>
@@ -190,7 +174,7 @@ const FilteredWeatherList = computed(() => {
     <div class="dashboard-intro cities-dashboard-intro" :class="`cities-dashboard-intro--${resolvedTheme}`">
       <div class="cities-intro-copy">
         <p class="eyebrow"><span class="cities-live-signal" aria-hidden="true"></span>KOREA WEATHER NETWORK</p>
-        <h1>가까운 도시부터<br><em>오늘의 날씨</em>를 만나보세요.</h1>
+        <h1>가까운 도시부터<br /><em>오늘의 날씨</em>를 만나보세요.</h1>
         <p class="cities-intro-description">지역과 도시를 검색하고, 현재 기온부터 체감 날씨까지 한곳에서 비교할 수 있어요.</p>
         <div class="cities-intro-meta" aria-label="날씨 데이터 상태">
           <span><i class="cities-meta-clock" aria-hidden="true"></i>{{ referenceTime }}</span>
@@ -202,12 +186,8 @@ const FilteredWeatherList = computed(() => {
         <i class="cities-intro-star cities-intro-star--three"></i>
         <span class="cities-intro-cloud cities-intro-cloud--one"></span>
         <span class="cities-intro-cloud cities-intro-cloud--two"></span>
-        <div class="intro-orb" :class="`intro-orb--${introSky.state}`">
-          <i class="intro-sky-object"></i><i class="intro-sky-cutout"></i><i class="intro-sky-ring"></i>
-        </div>
-        <div class="cities-intro-skyline">
-          <i></i><i></i><i></i><i></i><i></i>
-        </div>
+        <div class="intro-orb" :class="`intro-orb--${introSky.state}`"><i class="intro-sky-object"></i><i class="intro-sky-cutout"></i><i class="intro-sky-ring"></i></div>
+        <div class="cities-intro-skyline"><i></i><i></i><i></i><i></i><i></i></div>
         <span class="cities-intro-horizon"></span>
       </div>
     </div>
@@ -217,20 +197,12 @@ const FilteredWeatherList = computed(() => {
       </template>
       <template v-slot:content>
         <div class="region-filters" role="group" aria-label="지역별 도시 필터">
-          <BUTTON
-            v-for="region in regions"
-            :key="region"
-            :class="{ active: selectedRegion === region }"
-            @click="selectedRegion = region"
-          >
+          <BUTTON v-for="region in regions" :key="region" :class="{ active: selectedRegion === region }" @click="selectedRegion = region">
             {{ region }}
           </BUTTON>
         </div>
         <SEARCH v-model:searchQuery="searchQuery" />
-        <FAVORITES
-          :cities="favoriteCities"
-          @remove="toggleFavorite"
-        />
+        <FAVORITES :cities="favoriteCities" @remove="toggleFavorite" />
       </template>
     </BASEDASHBOARD>
     <div class="weather-results-layout" :class="{ 'has-selected-city': selectedCity }">
@@ -248,20 +220,11 @@ const FilteredWeatherList = computed(() => {
           </div>
         </template>
         <template v-slot:content>
-          <CARD
-            :weatherList="FilteredWeatherList"
-            :favoriteCityIds="favoriteCityIds"
-            v-model:selectedCityId="selectedCityId"
-            @toggle-favorite="toggleFavorite"
-          />
+          <CARD :weatherList="FilteredWeatherList" :favoriteCityIds="favoriteCityIds" v-model:selectedCityId="selectedCityId" @toggle-favorite="toggleFavorite" />
         </template>
       </BASEDASHBOARD>
       <aside v-if="selectedCity" class="weather-list-detail" aria-label="선택한 도시 날씨 정보">
-        <CITYPANEL
-          :city="selectedCity"
-          close-label="도시 상세 패널 닫기"
-          @close="selectedCityId = ''"
-        />
+        <CITYPANEL :city="selectedCity" close-label="도시 상세 패널 닫기" @close="selectedCityId = ''" />
       </aside>
     </div>
   </section>

@@ -5,8 +5,8 @@ import { getAirPollutionAPI } from '@/services/weatherAPI'
 const props = defineProps({
   city: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const airQuality = ref(null)

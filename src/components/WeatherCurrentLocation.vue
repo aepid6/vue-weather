@@ -12,8 +12,8 @@ import coatIcon from '@/assets/clothes/coat.svg'
 const props = defineProps({
   city: {
     type: Object,
-    default: null
-  }
+    default: null,
+  },
 })
 
 const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
@@ -49,7 +49,7 @@ const outfitPalettes = [
   { top: '#d8c8ae', bottom: '#25272a', outer: '#6d5948', accent: '#f7f1e7' },
   { top: '#87927a', bottom: '#eee7d8', outer: '#333a35', accent: '#f8f5ed' },
   { top: '#b9bab8', bottom: '#35516d', outer: '#8a7c6c', accent: '#f4f4f2' },
-  { top: '#26364d', bottom: '#d5d0c6', outer: '#a8a198', accent: '#eef3f8' }
+  { top: '#26364d', bottom: '#d5d0c6', outer: '#a8a198', accent: '#eef3f8' },
 ]
 
 outfitPalette.value = Math.floor(Math.random() * outfitPalettes.length)
@@ -87,16 +87,9 @@ const outfit = computed(() => {
   }
 
   const needsOuter = Number.isFinite(low) && low < 16
-  const outerLabel = !Number.isFinite(low)
-    ? '외투 정보 확인 중'
-    : low < 5 ? '두꺼운 외투가 필요해요'
-      : low < 12 ? '자켓을 챙기세요'
-        : low < 16 ? '얇은 외투가 좋아요'
-          : '외투 없이도 괜찮아요'
+  const outerLabel = !Number.isFinite(low) ? '외투 정보 확인 중' : low < 5 ? '두꺼운 외투가 필요해요' : low < 12 ? '자켓을 챙기세요' : low < 16 ? '얇은 외투가 좋아요' : '외투 없이도 괜찮아요'
 
-  const topIcon = ['summer', 'light'].includes(type)
-    ? tshirtIcon
-    : type === 'shirt' ? shirtIcon : sweaterIcon
+  const topIcon = ['summer', 'light'].includes(type) ? tshirtIcon : type === 'shirt' ? shirtIcon : sweaterIcon
   const bottomIcon = type === 'summer' ? shortsIcon : pantsIcon
   const outerIcon = Number.isFinite(low) && low < 5 ? coatIcon : jacketIcon
 
@@ -113,7 +106,7 @@ watch(
     updateTimer = setTimeout(() => {
       isTemperatureUpdating.value = false
     }, 800)
-  }
+  },
 )
 
 const currentTimelineIndex = computed(() => {
@@ -133,9 +126,7 @@ const graphPoints = computed(() => {
   const timeline = props.city?.temperatureTimeline ?? []
   const normalizedTimeline = timeline.map((hour, index) => ({
     ...hour,
-    temp: index === currentTimelineIndex.value && Number.isFinite(props.city?.currentTemp)
-      ? props.city.currentTemp
-      : hour.temp
+    temp: index === currentTimelineIndex.value && Number.isFinite(props.city?.currentTemp) ? props.city.currentTemp : hour.temp,
   }))
   const temperatures = normalizedTimeline.map((hour) => hour.temp).filter(Number.isFinite)
 
@@ -147,8 +138,8 @@ const graphPoints = computed(() => {
 
   return normalizedTimeline.map((hour, index) => ({
     ...hour,
-    x: 28 + (index * 56),
-    y: 82 - (((hour.temp - minimum) / range) * 48)
+    x: 28 + index * 56,
+    y: 82 - ((hour.temp - minimum) / range) * 48,
   }))
 })
 
@@ -177,64 +168,59 @@ const fallbackWeatherItems = computed(() => [
     label: '기압',
     value: Number.isFinite(props.city?.details?.pressure) ? props.city.details.pressure : '--',
     unit: Number.isFinite(props.city?.details?.pressure) ? 'hPa' : '',
-    graphic: 'pressure'
+    graphic: 'pressure',
   },
   {
     label: '가시거리',
-    value: Number.isFinite(props.city?.details?.visibility)
-      ? (props.city.details.visibility / 1000).toFixed(1)
-      : '--',
+    value: Number.isFinite(props.city?.details?.visibility) ? (props.city.details.visibility / 1000).toFixed(1) : '--',
     unit: Number.isFinite(props.city?.details?.visibility) ? 'km' : '',
     graphic: 'visibility',
-    variant: visibilityGraphicVariant(props.city?.details?.visibility)
+    variant: visibilityGraphicVariant(props.city?.details?.visibility),
   },
   {
     label: '현재 날씨',
     value: props.city?.status || '정보 없음',
     unit: '',
-    graphic: 'weather'
-  }
+    graphic: 'weather',
+  },
 ])
 
-const weatherEmoji = (status) => ({
-  '맑음': '☀️',
-  '대체로 맑음': '🌤️',
-  '구름 조금': '⛅',
-  '흐림': '☁️',
-  '안개': '🌫️',
-  '이슬비': '🌦️',
-  '비': '🌧️',
-  '강한 비': '🌧️',
-  '눈': '🌨️',
-  '뇌우': '⛈️'
-}[status] || '☁️')
+const weatherEmoji = (status) =>
+  ({
+    맑음: '☀️',
+    '대체로 맑음': '🌤️',
+    '구름 조금': '⛅',
+    흐림: '☁️',
+    안개: '🌫️',
+    이슬비: '🌦️',
+    비: '🌧️',
+    '강한 비': '🌧️',
+    눈: '🌨️',
+    뇌우: '⛈️',
+  })[status] || '☁️'
 
-const clothingIconClass = (icon) => ({
-  [tshirtIcon]: 'clothing-icon--tshirt',
-  [shirtIcon]: 'clothing-icon--shirt',
-  [sweaterIcon]: 'clothing-icon--sweater',
-  [shortsIcon]: 'clothing-icon--shorts',
-  [pantsIcon]: 'clothing-icon--pants',
-  [jacketIcon]: 'clothing-icon--jacket',
-  [coatIcon]: 'clothing-icon--coat'
-}[icon])
+const clothingIconClass = (icon) =>
+  ({
+    [tshirtIcon]: 'clothing-icon--tshirt',
+    [shirtIcon]: 'clothing-icon--shirt',
+    [sweaterIcon]: 'clothing-icon--sweater',
+    [shortsIcon]: 'clothing-icon--shorts',
+    [pantsIcon]: 'clothing-icon--pants',
+    [jacketIcon]: 'clothing-icon--jacket',
+    [coatIcon]: 'clothing-icon--coat',
+  })[icon]
 
 const formatTime = (time) => {
   return new Date(time).toLocaleTimeString('ko-KR', {
     hour: 'numeric',
-    hour12: false
+    hour12: false,
   })
 }
 </script>
 
 <template>
   <section v-if="city" class="current-location-card" aria-live="polite">
-    <div
-      :key="city.id"
-      class="current-location-landmark"
-      :class="`landmark-${cityLandmark.type}`"
-      :aria-label="`${city.name} ${cityLandmark.label}`"
-    >
+    <div :key="city.id" class="current-location-landmark" :class="`landmark-${cityLandmark.type}`" :aria-label="`${city.name} ${cityLandmark.label}`">
       <span aria-hidden="true"><b></b><b></b><b></b></span>
       <i aria-hidden="true"></i>
     </div>
@@ -254,28 +240,19 @@ const formatTime = (time) => {
       <div v-if="hasHourlyForecast" class="location-forecast-body">
         <div class="location-forecast-scroll">
           <svg class="location-forecast-chart" viewBox="0 0 672 112" role="img" aria-label="시간별 기온 그래프">
-          <defs>
-            <linearGradient id="forecast-area-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="var(--theme-accent)" stop-opacity=".28" />
-              <stop offset="1" stop-color="var(--theme-accent)" stop-opacity="0" />
-            </linearGradient>
-          </defs>
-          <line v-for="guide in [32, 56, 80]" :key="guide" x1="0" :y1="guide" x2="672" :y2="guide" class="forecast-guide" />
-          <polygon
-            v-if="graphPoints.length"
-            :points="`28,102 ${graphPolyline} ${graphPoints.at(-1).x},102`"
-            fill="url(#forecast-area-gradient)"
-          />
-          <polyline :points="graphPolyline" class="forecast-line" />
-          <g
-            v-for="(point, index) in graphPoints"
-            :key="point.time"
-            class="forecast-point"
-            :class="{ current: index === currentTimelineIndex }"
-          >
-            <circle :cx="point.x" :cy="point.y" r="4" />
-            <text :x="point.x" :y="point.y - 10">{{ formatTemperature(point.temp) }}°</text>
-          </g>
+            <defs>
+              <linearGradient id="forecast-area-gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="var(--theme-accent)" stop-opacity=".28" />
+                <stop offset="1" stop-color="var(--theme-accent)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <line v-for="guide in [32, 56, 80]" :key="guide" x1="0" :y1="guide" x2="672" :y2="guide" class="forecast-guide" />
+            <polygon v-if="graphPoints.length" :points="`28,102 ${graphPolyline} ${graphPoints.at(-1).x},102`" fill="url(#forecast-area-gradient)" />
+            <polyline :points="graphPolyline" class="forecast-line" />
+            <g v-for="(point, index) in graphPoints" :key="point.time" class="forecast-point" :class="{ current: index === currentTimelineIndex }">
+              <circle :cx="point.x" :cy="point.y" r="4" />
+              <text :x="point.x" :y="point.y - 10">{{ formatTemperature(point.temp) }}°</text>
+            </g>
           </svg>
           <div class="location-forecast-track">
             <div
@@ -286,8 +263,8 @@ const formatTime = (time) => {
                 `forecast-delay--${index}`,
                 {
                   current: index === currentTimelineIndex,
-                  future: index > currentTimelineIndex
-                }
+                  future: index > currentTimelineIndex,
+                },
               ]"
             >
               <span>{{ index === currentTimelineIndex ? '현재' : formatTime(hour.time) }}</span>
@@ -297,18 +274,9 @@ const formatTime = (time) => {
           </div>
         </div>
         <aside class="today-extremes" aria-label="오늘 최고 및 최저 기온">
-          <div
-            class="today-extreme-card today-extreme-card--high"
-            :class="[`outfit-${outfit.type}`, `outfit-palette--${outfitPalette}`]"
-          >
+          <div class="today-extreme-card today-extreme-card--high" :class="[`outfit-${outfit.type}`, `outfit-palette--${outfitPalette}`]">
             <span>오늘 최고</span>
-            <button
-              type="button"
-              class="outfit-color-refresh"
-              aria-label="추천 옷차림 색상 조합 바꾸기"
-              title="옷 색상 바꾸기"
-              @click="refreshOutfitPalette"
-            >
+            <button type="button" class="outfit-color-refresh" aria-label="추천 옷차림 색상 조합 바꾸기" title="옷 색상 바꾸기" @click="refreshOutfitPalette">
               <i class="palette-swatch--top" aria-hidden="true"></i>
               <i class="palette-swatch--bottom" aria-hidden="true"></i>
             </button>
@@ -319,10 +287,7 @@ const formatTime = (time) => {
             <small class="extreme-clothes-label">{{ outfit.label }}</small>
             <strong>{{ formatTemperature(city.todayHigh) }}<small>°C</small></strong>
           </div>
-          <div
-            class="today-extreme-card today-extreme-card--low"
-            :class="[`outfit-palette--${outfitPalette}`, { 'outer-not-needed': !outfit.needsOuter }]"
-          >
+          <div class="today-extreme-card today-extreme-card--low" :class="[`outfit-palette--${outfitPalette}`, { 'outer-not-needed': !outfit.needsOuter }]">
             <span>오늘 최저</span>
             <div class="extreme-clothes extreme-clothes--outer" aria-hidden="true">
               <i class="clothing-svg clothing-svg--outer" :class="clothingIconClass(outfit.outerIcon)"></i>
@@ -336,19 +301,10 @@ const formatTime = (time) => {
         <div class="location-fallback-metrics">
           <article v-for="item in fallbackWeatherItems" :key="item.label">
             <span>{{ item.label }}</span>
-            <i
-              class="fallback-metric-graphic"
-              :class="[
-                `fallback-metric-graphic--${item.graphic}`,
-                item.graphic === 'weather'
-                  ? `fallback-metric-graphic--weather-${weatherGraphicVariant(city.status)}`
-                  : item.variant
-                    ? `fallback-metric-graphic--${item.graphic}-${item.variant}`
-                    : null
-              ]"
-              aria-hidden="true"
-            ><b></b></i>
-            <strong>{{ item.value }}<small v-if="item.unit"> {{ item.unit }}</small></strong>
+            <i class="fallback-metric-graphic" :class="[`fallback-metric-graphic--${item.graphic}`, item.graphic === 'weather' ? `fallback-metric-graphic--weather-${weatherGraphicVariant(city.status)}` : item.variant ? `fallback-metric-graphic--${item.graphic}-${item.variant}` : null]" aria-hidden="true"><b></b></i>
+            <strong
+              >{{ item.value }}<small v-if="item.unit"> {{ item.unit }}</small></strong
+            >
           </article>
         </div>
         <aside class="today-extremes today-extremes--fallback" aria-label="체감온도 및 습도">
@@ -365,9 +321,7 @@ const formatTime = (time) => {
         </aside>
       </div>
     </div>
-    <RouterLink class="current-location-detail" :to="{ name: 'Detail', params: { cityId: city.id } }">
-      상세 날씨 보기 <span aria-hidden="true">→</span>
-    </RouterLink>
+    <RouterLink class="current-location-detail" :to="{ name: 'Detail', params: { cityId: city.id } }"> 상세 날씨 보기 <span aria-hidden="true">→</span> </RouterLink>
   </section>
 </template>
 
@@ -399,9 +353,7 @@ const formatTime = (time) => {
   border: 3px solid currentColor;
   border-bottom-color: color-mix(in srgb, currentColor 24%, transparent);
   border-radius: 50%;
-  background:
-    radial-gradient(circle, transparent 55%, color-mix(in srgb, currentColor 10%, transparent) 57%, transparent 60%),
-    color-mix(in srgb, var(--theme-stage) 74%, transparent);
+  background: radial-gradient(circle, transparent 55%, color-mix(in srgb, currentColor 10%, transparent) 57%, transparent 60%), color-mix(in srgb, var(--theme-stage) 74%, transparent);
   box-shadow: inset 0 0 16px color-mix(in srgb, currentColor 12%, transparent);
 }
 
@@ -438,7 +390,9 @@ const formatTime = (time) => {
     11px -10px 0 -3px currentColor,
     27px -7px 0 -5px currentColor,
     0 0 14px color-mix(in srgb, currentColor 28%, transparent);
-  transition: opacity .3s, transform .3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
   animation: visibility-cloud-drift 4.2s ease-in-out infinite;
 }
 
@@ -452,7 +406,9 @@ const formatTime = (time) => {
   box-shadow:
     9px -8px 0 -3px currentColor,
     22px -5px 0 -5px currentColor;
-  transition: opacity .3s, transform .3s;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
   animation: visibility-cloud-drift 5s -2s ease-in-out infinite reverse;
 }
 
@@ -461,19 +417,40 @@ const formatTime = (time) => {
   height: 1px;
   left: 8px;
   bottom: 7px;
-  opacity: .42;
+  opacity: 0.42;
   background: linear-gradient(90deg, transparent, currentColor, transparent);
   box-shadow: 0 -5px color-mix(in srgb, currentColor 50%, transparent);
 }
 
-.fallback-metric-graphic--visibility-clear::before { opacity: .38; transform: translate(10px, -3px) scale(.72); }
-.fallback-metric-graphic--visibility-clear::after { opacity: 0; transform: translateX(16px) scale(.65); }
-.fallback-metric-graphic--visibility-moderate::before { opacity: .76; transform: translate(2px, 0) scale(.9); }
-.fallback-metric-graphic--visibility-moderate::after { opacity: .38; transform: translate(7px, -2px) scale(.78); }
-.fallback-metric-graphic--visibility-cloudy::before { opacity: .98; transform: translate(-3px, 1px) scale(1.08); }
-.fallback-metric-graphic--visibility-cloudy::after { opacity: .78; transform: translate(-8px, 2px) scale(1.02); }
+.fallback-metric-graphic--visibility-clear::before {
+  opacity: 0.38;
+  transform: translate(10px, -3px) scale(0.72);
+}
+.fallback-metric-graphic--visibility-clear::after {
+  opacity: 0;
+  transform: translateX(16px) scale(0.65);
+}
+.fallback-metric-graphic--visibility-moderate::before {
+  opacity: 0.76;
+  transform: translate(2px, 0) scale(0.9);
+}
+.fallback-metric-graphic--visibility-moderate::after {
+  opacity: 0.38;
+  transform: translate(7px, -2px) scale(0.78);
+}
+.fallback-metric-graphic--visibility-cloudy::before {
+  opacity: 0.98;
+  transform: translate(-3px, 1px) scale(1.08);
+}
+.fallback-metric-graphic--visibility-cloudy::after {
+  opacity: 0.78;
+  transform: translate(-8px, 2px) scale(1.02);
+}
 .fallback-metric-graphic--visibility-unknown::before,
-.fallback-metric-graphic--visibility-unknown::after { opacity: .3; filter: grayscale(1); }
+.fallback-metric-graphic--visibility-unknown::after {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
 
 .fallback-metric-graphic--weather::before {
   width: 31px;
@@ -484,7 +461,9 @@ const formatTime = (time) => {
   border-radius: 50%;
   background: color-mix(in srgb, currentColor 22%, transparent);
   box-shadow: 0 0 18px color-mix(in srgb, currentColor 34%, transparent);
-  transition: opacity .25s, transform .25s;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
 }
 
 .fallback-metric-graphic--weather::after {
@@ -499,7 +478,9 @@ const formatTime = (time) => {
     -13px 4px 0 -1px var(--theme-stage),
     -15px 4px 0 2px currentColor,
     inset 0 0 13px color-mix(in srgb, currentColor 12%, transparent);
-  transition: opacity .25s, transform .25s;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
 }
 
 .fallback-metric-graphic--weather b {
@@ -510,12 +491,14 @@ const formatTime = (time) => {
   border-radius: 4px;
   opacity: 0;
   background: currentColor;
-  box-shadow: 11px 0 currentColor, 22px 0 currentColor;
+  box-shadow:
+    11px 0 currentColor,
+    22px 0 currentColor;
 }
 
 .fallback-metric-graphic--weather-clear::after {
   opacity: 0;
-  transform: translate(8px, 5px) scale(.7);
+  transform: translate(8px, 5px) scale(0.7);
 }
 
 .fallback-metric-graphic--weather-clear::before {
@@ -526,15 +509,15 @@ const formatTime = (time) => {
 
 .fallback-metric-graphic--weather-cloud::before,
 .fallback-metric-graphic--weather-fog::before {
-  opacity: .24;
-  transform: translate(9px, 8px) scale(.78);
+  opacity: 0.24;
+  transform: translate(9px, 8px) scale(0.78);
 }
 
 .fallback-metric-graphic--weather-rain b,
 .fallback-metric-graphic--weather-snow b,
 .fallback-metric-graphic--weather-storm b,
 .fallback-metric-graphic--weather-fog b {
-  opacity: .9;
+  opacity: 0.9;
 }
 
 .fallback-metric-graphic--weather-rain b,
@@ -568,34 +551,73 @@ const formatTime = (time) => {
 }
 
 @keyframes fallback-graphic-float {
-  0%, 100% { transform: translateY(2px); }
-  50% { transform: translateY(-3px); }
+  0%,
+  100% {
+    transform: translateY(2px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 @keyframes pressure-needle {
-  0%, 100% { transform: rotate(29deg); }
-  50% { transform: rotate(55deg); }
+  0%,
+  100% {
+    transform: rotate(29deg);
+  }
+  50% {
+    transform: rotate(55deg);
+  }
 }
 
 @keyframes visibility-cloud-drift {
-  0%, 100% { margin-left: -3px; filter: brightness(.86); }
-  50% { margin-left: 4px; filter: brightness(1.12); }
+  0%,
+  100% {
+    margin-left: -3px;
+    filter: brightness(0.86);
+  }
+  50% {
+    margin-left: 4px;
+    filter: brightness(1.12);
+  }
 }
 
 @keyframes weather-rain {
-  from { transform: translateY(-3px) skewX(-16deg); opacity: 0; }
-  35% { opacity: .9; }
-  to { transform: translateY(4px) skewX(-16deg); opacity: 0; }
+  from {
+    transform: translateY(-3px) skewX(-16deg);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(4px) skewX(-16deg);
+    opacity: 0;
+  }
 }
 
 @keyframes weather-snow {
-  0%, 100% { transform: translateY(-2px); opacity: .45; }
-  50% { transform: translateY(4px); opacity: 1; }
+  0%,
+  100% {
+    transform: translateY(-2px);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
 }
 
 @keyframes weather-fog {
-  0%, 100% { transform: translateX(-3px); opacity: .45; }
-  50% { transform: translateX(3px); opacity: .9; }
+  0%,
+  100% {
+    transform: translateX(-3px);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(3px);
+    opacity: 0.9;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

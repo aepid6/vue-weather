@@ -8,8 +8,8 @@ const router = useRouter()
 defineProps({
   cities: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['remove'])
@@ -39,15 +39,7 @@ const changeText = (change) => {
       <small>{{ cities.length }}개 도시</small>
     </div>
     <div class="favorite-city-row">
-      <article
-        v-for="city in cities"
-        :key="city.id"
-        class="favorite-city-item"
-        role="link"
-        tabindex="0"
-        @click="openDetail(city.id)"
-        @keydown.enter="openDetail(city.id)"
-      >
+      <article v-for="city in cities" :key="city.id" class="favorite-city-item" role="link" tabindex="0" @click="openDetail(city.id)" @keydown.enter="openDetail(city.id)">
         <WEATHERGRAPHIC :status="city.weatherStatus" size="small" />
         <div class="favorite-city-name">
           <strong>{{ city.name }}</strong>

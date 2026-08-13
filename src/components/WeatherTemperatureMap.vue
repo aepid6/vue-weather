@@ -4,12 +4,12 @@ import { computed } from 'vue'
 const props = defineProps({
   weatherList: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   currentLocationId: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['select-city'])
@@ -36,7 +36,7 @@ const referenceTime = computed(() => {
   return `${new Date(latestObservedAt).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
   })} 기준`
 })
 </script>
@@ -54,22 +54,11 @@ const referenceTime = computed(() => {
       <div class="map-projection">
         <img class="korea-map-shape" :src="koreaMapURL" alt="" />
         <div class="map-city-layer">
-        <button
-          v-for="city in props.weatherList"
-          :key="city.id"
-          class="map-city"
-          :class="[
-            `map-city--${city.id}`,
-            temperatureClass(city.currentTemp),
-            { 'is-current-location': city.id === props.currentLocationId }
-          ]"
-          :aria-label="`${city.name} ${city.currentTemp ?? '정보 없음'}도 선택`"
-          @click="emit('select-city', city.id)"
-        >
-          <span class="map-city-pulse" aria-hidden="true"></span>
-          <span class="map-city-dot" aria-hidden="true"></span>
-          <span class="map-city-label">{{ city.name }}</span>
-        </button>
+          <button v-for="city in props.weatherList" :key="city.id" class="map-city" :class="[`map-city--${city.id}`, temperatureClass(city.currentTemp), { 'is-current-location': city.id === props.currentLocationId }]" :aria-label="`${city.name} ${city.currentTemp ?? '정보 없음'}도 선택`" @click="emit('select-city', city.id)">
+            <span class="map-city-pulse" aria-hidden="true"></span>
+            <span class="map-city-dot" aria-hidden="true"></span>
+            <span class="map-city-label">{{ city.name }}</span>
+          </button>
         </div>
       </div>
       <p class="map-note">{{ referenceTime }}</p>

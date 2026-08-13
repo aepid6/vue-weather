@@ -8,12 +8,12 @@ import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 const props = defineProps({
   city: {
     type: Object,
-    required: true
+    required: true,
   },
   closeLabel: {
     type: String,
-    default: '도시 상세 정보 닫기'
-  }
+    default: '도시 상세 정보 닫기',
+  },
 })
 
 const emit = defineEmits(['close'])
@@ -25,7 +25,7 @@ const observedTime = computed(() => {
     month: 'long',
     day: 'numeric',
     hour: 'numeric',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 })
 
@@ -68,9 +68,7 @@ const temperatureChangeText = computed(() => {
       </div>
     </div>
     <div class="selected-actions">
-      <RouterLink class="map-modal-detail" :to="{ name: 'Detail', params: { cityId: city.id } }">
-        상세 날씨 보기 <span aria-hidden="true">→</span>
-      </RouterLink>
+      <RouterLink class="map-modal-detail" :to="{ name: 'Detail', params: { cityId: city.id } }"> 상세 날씨 보기 <span aria-hidden="true">→</span> </RouterLink>
     </div>
   </section>
 </template>

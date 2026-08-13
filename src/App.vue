@@ -23,9 +23,8 @@ const themeOptions = [
   { value: 'morning', label: '아침' },
   { value: 'afternoon', label: '낮' },
   { value: 'evening', label: '저녁' },
-  { value: 'night', label: '밤' }
+  { value: 'night', label: '밤' },
 ]
-
 </script>
 
 <template>
@@ -39,7 +38,7 @@ const themeOptions = [
       summary: { class: 'weather-toast-summary' },
       detail: { class: 'weather-toast-detail' },
       closeButton: { class: 'weather-toast-close' },
-      closeIcon: { class: 'weather-toast-close-icon' }
+      closeIcon: { class: 'weather-toast-close-icon' },
     }"
   >
     <template #messageicon>
@@ -79,7 +78,7 @@ const themeOptions = [
             dropdown: { class: 'grid w-7 place-items-center text-cyan-200/70' },
             overlay: { class: 'p-select-overlay z-[304] mt-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/95 p-1 shadow-2xl backdrop-blur-xl' },
             list: { class: 'grid gap-0.5' },
-            option: { class: 'p-select-option cursor-pointer rounded-lg px-2.5 py-2 font-mono text-[10px] text-slate-300 outline-none transition hover:bg-white/10 hover:text-white' }
+            option: { class: 'p-select-option cursor-pointer rounded-lg px-2.5 py-2 font-mono text-[10px] text-slate-300 outline-none transition hover:bg-white/10 hover:text-white' },
           }"
         />
       </label>

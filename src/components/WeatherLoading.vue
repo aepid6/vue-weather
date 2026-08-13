@@ -5,8 +5,8 @@ import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 const props = defineProps({
   progress: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const normalizedProgress = computed(() => Math.min(100, Math.max(0, Math.round(props.progress))))
@@ -23,11 +23,9 @@ const normalizedProgress = computed(() => Math.min(100, Math.max(0, Math.round(p
       <span class="loading-star load-star-two"></span>
     </div>
     <p class="loading-kicker">WEATHER SATELLITE</p>
-    <h1>하늘의 신호를<br><em>수신하고 있어요.</em></h1>
+    <h1>하늘의 신호를<br /><em>수신하고 있어요.</em></h1>
     <div class="loading-progress">
-      <progress :value="normalizedProgress" max="100" aria-label="날씨 정보 로딩 진행률">
-        {{ normalizedProgress }}%
-      </progress>
+      <progress :value="normalizedProgress" max="100" aria-label="날씨 정보 로딩 진행률">{{ normalizedProgress }}%</progress>
     </div>
   </section>
 </template>

@@ -5,7 +5,7 @@ import { CITIES } from '@/constants/cities'
 import { matchesCityName } from '@/utils/search'
 
 const props = defineProps({
-  searchQuery: String
+  searchQuery: String,
 })
 
 const emit = defineEmits(['update:searchQuery'])
@@ -19,9 +19,7 @@ const suggestions = computed(() => {
 
   if (!query) return []
 
-  return CITIES
-    .filter((city) => matchesCityName(city.name, query))
-    .slice(0, 8)
+  return CITIES.filter((city) => matchesCityName(city.name, query)).slice(0, 8)
 })
 
 const showSuggestions = computed(() => isOpen.value && suggestions.value.length > 0)
@@ -47,9 +45,7 @@ const moveActiveOption = async (direction) => {
   if (!suggestions.value.length) return
 
   isOpen.value = true
-  activeIndex.value = direction > 0
-    ? (activeIndex.value + 1) % suggestions.value.length
-    : (activeIndex.value - 1 + suggestions.value.length) % suggestions.value.length
+  activeIndex.value = direction > 0 ? (activeIndex.value + 1) % suggestions.value.length : (activeIndex.value - 1 + suggestions.value.length) % suggestions.value.length
 
   await nextTick()
   const activeOption = optionElements.value[activeIndex.value]
@@ -91,34 +87,10 @@ watch(suggestions, () => {
   <div class="search-bar">
     <label class="search-input-wrap">
       <span aria-hidden="true">⌕</span>
-      <INPUTTEXT
-        class="min-w-0 flex-1"
-        type="text"
-        role="combobox"
-        autocomplete="off"
-        :value="props.searchQuery"
-        :aria-expanded="showSuggestions"
-        :aria-controls="listboxId"
-        :aria-activedescendant="activeIndex >= 0 ? `city-suggestion-${suggestions[activeIndex].id}` : undefined"
-        placeholder="도시 이름 또는 초성을 입력하세요"
-        @input="searchCityEvent"
-        @focus="isOpen = true"
-        @blur="isOpen = false"
-        @keydown="handleKeydown"
-      />
+      <INPUTTEXT class="min-w-0 flex-1" type="text" role="combobox" autocomplete="off" :value="props.searchQuery" :aria-expanded="showSuggestions" :aria-controls="listboxId" :aria-activedescendant="activeIndex >= 0 ? `city-suggestion-${suggestions[activeIndex].id}` : undefined" placeholder="도시 이름 또는 초성을 입력하세요" @input="searchCityEvent" @focus="isOpen = true" @blur="isOpen = false" @keydown="handleKeydown" />
     </label>
     <ul v-if="showSuggestions" :id="listboxId" ref="listboxElement" class="search-suggestions" role="listbox">
-      <li
-        v-for="(city, index) in suggestions"
-        :id="`city-suggestion-${city.id}`"
-        :key="city.id"
-        :ref="(element) => optionElements[index] = element"
-        role="option"
-        :aria-selected="index === activeIndex"
-        :class="{ active: index === activeIndex }"
-        @mouseenter="activeIndex = index"
-        @mousedown.prevent="selectSuggestion(city)"
-      >
+      <li v-for="(city, index) in suggestions" :id="`city-suggestion-${city.id}`" :key="city.id" :ref="(element) => (optionElements[index] = element)" role="option" :aria-selected="index === activeIndex" :class="{ active: index === activeIndex }" @mouseenter="activeIndex = index" @mousedown.prevent="selectSuggestion(city)">
         <span>{{ city.name }}</span>
         <small>{{ city.province || '특별시·광역시' }}</small>
       </li>

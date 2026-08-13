@@ -5,7 +5,7 @@ import { WEATHER_CODES } from '@/constants/weatherCode'
 const props = defineProps({
   status: { type: String, default: '' },
   type: { type: String, default: '' },
-  size: { type: String, default: 'medium' }
+  size: { type: String, default: 'medium' },
 })
 
 const graphicType = computed(() => props.type || WEATHER_CODES[props.status] || 'cloudy')

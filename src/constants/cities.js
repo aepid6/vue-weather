@@ -4,217 +4,217 @@ export const CITIES = [
     name: '서울',
     province: '',
     lat: 37.566,
-    lon: 126.978
+    lon: 126.978,
   },
   {
     id: 'suwon',
     name: '수원',
     province: '경기도',
     lat: 37.291111,
-    lon: 127.008889
+    lon: 127.008889,
   },
   {
     id: 'busan',
     name: '부산',
     province: '',
     lat: 35.10168,
-    lon: 129.03004
+    lon: 129.03004,
   },
   {
     id: 'ulsan',
     name: '울산',
     province: '',
     lat: 35.537222,
-    lon: 129.316667
+    lon: 129.316667,
   },
- {
+  {
     id: 'chuncheon',
     name: '춘천',
     province: '강원도',
     lat: 37.874722,
-    lon: 127.734167
+    lon: 127.734167,
   },
   {
     id: 'pohang',
     name: '포항',
     province: '경상북도',
     lat: 36.02917,
-    lon: 129.36481
+    lon: 129.36481,
   },
   {
     id: 'changwon',
     name: '창원',
     province: '경상남도',
     lat: 35.228056,
-    lon: 128.681111
+    lon: 128.681111,
   },
   {
     id: 'incheon',
     name: '인천',
     province: '',
     lat: 37.45646,
-    lon: 126.70515
+    lon: 126.70515,
   },
   {
     id: 'daejeon',
     name: '대전',
     province: '',
     lat: 36.349129,
-    lon: 127.38493
+    lon: 127.38493,
   },
   {
     id: 'daegu',
     name: '대구',
     province: '',
     lat: 35.870278,
-    lon: 128.591111
+    lon: 128.591111,
   },
   {
     id: 'gwangju',
     name: '광주',
     province: '',
     lat: 35.154722,
-    lon: 126.915556
+    lon: 126.915556,
   },
   {
     id: 'gangneung',
     name: '강릉',
     province: '강원도',
     lat: 37.751853,
-    lon: 128.876057
+    lon: 128.876057,
   },
   {
     id: 'cheongju',
     name: '청주',
     province: '충청북도',
     lat: 36.637222,
-    lon: 127.489722
+    lon: 127.489722,
   },
   {
     id: 'cheonan',
     name: '천안',
     province: '충청남도',
     lat: 36.8065,
-    lon: 127.1522
+    lon: 127.1522,
   },
   {
     id: 'jeonju',
     name: '전주',
     province: '전라북도',
     lat: 35.821945,
-    lon: 127.148889
+    lon: 127.148889,
   },
   {
     id: 'mokpo',
     name: '목포',
     province: '전라남도',
     lat: 34.812823,
-    lon: 126.391805
+    lon: 126.391805,
   },
   {
     id: 'yeosu',
     name: '여수',
     province: '전라남도',
     lat: 34.760622,
-    lon: 127.66215
+    lon: 127.66215,
   },
   {
     id: 'andong',
     name: '안동',
     province: '경상북도',
     lat: 36.566355,
-    lon: 128.722745
+    lon: 128.722745,
   },
   {
     id: 'sejong',
     name: '세종',
     province: '',
     lat: 36.4801,
-    lon: 127.289
+    lon: 127.289,
   },
   {
     id: 'goyang',
     name: '고양',
     province: '경기도',
     lat: 37.6564,
-    lon: 126.835
+    lon: 126.835,
   },
   {
     id: 'seongnam',
     name: '성남',
     province: '경기도',
     lat: 37.4386,
-    lon: 127.1378
+    lon: 127.1378,
   },
   {
     id: 'wonju',
     name: '원주',
     province: '강원도',
     lat: 37.3422,
-    lon: 127.9202
+    lon: 127.9202,
   },
   {
     id: 'chungju',
     name: '충주',
     province: '충청북도',
     lat: 36.991,
-    lon: 127.9259
+    lon: 127.9259,
   },
   {
     id: 'gongju',
     name: '공주',
     province: '충청남도',
     lat: 36.4465,
-    lon: 127.119
+    lon: 127.119,
   },
   {
     id: 'iksan',
     name: '익산',
     province: '전라북도',
     lat: 35.9483,
-    lon: 126.9576
+    lon: 126.9576,
   },
   {
     id: 'suncheon',
     name: '순천',
     province: '전라남도',
     lat: 34.9506,
-    lon: 127.4872
+    lon: 127.4872,
   },
   {
     id: 'gimhae',
     name: '김해',
     province: '경상남도',
     lat: 35.2342,
-    lon: 128.8811
+    lon: 128.8811,
   },
   {
     id: 'gyeongju',
     name: '경주',
     province: '경상북도',
     lat: 35.8562,
-    lon: 129.2247
+    lon: 129.2247,
   },
   {
     id: 'jeju',
     name: '제주',
     province: '제주도',
     lat: 33.4496,
-    lon: 126.5312
+    lon: 126.5312,
   },
   {
     id: 'sokcho',
     name: '속초',
     province: '강원도',
     lat: 38.207,
-    lon: 128.5918
+    lon: 128.5918,
   },
   {
     id: 'donghae',
     name: '동해',
     province: '강원도',
     lat: 37.5247,
-    lon: 129.1143
+    lon: 129.1143,
   },
   {
     id: 'samcheok',
@@ -228,167 +228,167 @@ export const CITIES = [
     name: '태백',
     province: '강원도',
     lat: 37.1641,
-    lon: 128.9856
+    lon: 128.9856,
   },
   {
     id: 'hongcheon',
     name: '홍천',
     province: '강원도',
     lat: 37.697,
-    lon: 127.8887
+    lon: 127.8887,
   },
   {
     id: 'gumi',
     name: '구미',
     province: '경상북도',
     lat: 36.1195,
-    lon: 128.3446
+    lon: 128.3446,
   },
   {
     id: 'gyeongsan',
     name: '경산',
     province: '경상북도',
     lat: 35.8251,
-    lon: 128.7412
+    lon: 128.7412,
   },
   {
     id: 'gimcheon',
     name: '김천',
     province: '경상북도',
     lat: 36.1398,
-    lon: 128.1136
+    lon: 128.1136,
   },
   {
     id: 'yeongju',
     name: '영주',
     province: '경상북도',
     lat: 36.8057,
-    lon: 128.6241
+    lon: 128.6241,
   },
   {
     id: 'mungyeong',
     name: '문경',
     province: '경상북도',
     lat: 36.586,
-    lon: 128.1868
+    lon: 128.1868,
   },
   {
     id: 'yongin',
     name: '용인',
     province: '경기도',
     lat: 37.2411,
-    lon: 127.1776
+    lon: 127.1776,
   },
   {
     id: 'uijeongbu',
     name: '의정부',
     province: '경기도',
     lat: 37.7381,
-    lon: 127.0337
+    lon: 127.0337,
   },
   {
     id: 'jecheon',
     name: '제천',
     province: '충청북도',
     lat: 37.1326,
-    lon: 128.191
+    lon: 128.191,
   },
   {
     id: 'eumseong',
     name: '음성',
     province: '충청북도',
     lat: 36.9403,
-    lon: 127.6905
+    lon: 127.6905,
   },
   {
     id: 'jincheon',
     name: '진천',
     province: '충청북도',
     lat: 36.8554,
-    lon: 127.4356
+    lon: 127.4356,
   },
   {
     id: 'asan',
     name: '아산',
     province: '충청남도',
     lat: 36.7898,
-    lon: 127.0018
+    lon: 127.0018,
   },
   {
     id: 'seosan',
     name: '서산',
     province: '충청남도',
     lat: 36.7845,
-    lon: 126.4503
+    lon: 126.4503,
   },
   {
     id: 'boryeong',
     name: '보령',
     province: '충청남도',
     lat: 36.3332,
-    lon: 126.6129
+    lon: 126.6129,
   },
   {
     id: 'gunsan',
     name: '군산',
     province: '전라북도',
     lat: 35.9677,
-    lon: 126.7366
+    lon: 126.7366,
   },
   {
     id: 'jeongeup',
     name: '정읍',
     province: '전라북도',
     lat: 35.5699,
-    lon: 126.856
+    lon: 126.856,
   },
   {
     id: 'namwon',
     name: '남원',
     province: '전라북도',
     lat: 35.4164,
-    lon: 127.3904
+    lon: 127.3904,
   },
   {
     id: 'naju',
     name: '나주',
     province: '전라남도',
     lat: 35.016,
-    lon: 126.7108
+    lon: 126.7108,
   },
   {
     id: 'gwangyang',
     name: '광양',
     province: '전라남도',
     lat: 34.9407,
-    lon: 127.6959
+    lon: 127.6959,
   },
   {
     id: 'jinju',
     name: '진주',
     province: '경상남도',
     lat: 35.18,
-    lon: 128.1076
+    lon: 128.1076,
   },
   {
     id: 'tongyeong',
     name: '통영',
     province: '경상남도',
     lat: 34.8544,
-    lon: 128.4332
+    lon: 128.4332,
   },
   {
     id: 'geoje',
     name: '거제',
     province: '경상남도',
     lat: 34.8806,
-    lon: 128.6211
+    lon: 128.6211,
   },
   {
     id: 'seogwipo',
     name: '서귀포',
     province: '제주도',
     lat: 33.2541,
-    lon: 126.5601
-  }
+    lon: 126.5601,
+  },
 ]

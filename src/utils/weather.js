@@ -13,7 +13,7 @@ const getAllHourlyTemperatures = (hourlyData) => {
     .map((time, index) => ({
       time,
       temp: hourly.temperature_2m[index],
-      weatherStatus: getWMOWeatherStatus(hourly.weather_code?.[index])
+      weatherStatus: getWMOWeatherStatus(hourly.weather_code?.[index]),
     }))
     .filter((hour) => Number.isFinite(hour.temp))
 }
@@ -22,7 +22,7 @@ export const getTemperatureTimeline = (hourlyData, observedAt) => {
   const currentHour = new Date(observedAt || Date.now())
   currentHour.setMinutes(0, 0, 0)
 
-  const timelineStart = currentHour.getTime() - (3 * 60 * 60 * 1000)
+  const timelineStart = currentHour.getTime() - 3 * 60 * 60 * 1000
 
   return getAllHourlyTemperatures(hourlyData)
     .filter((hour) => new Date(hour.time).getTime() >= timelineStart)
@@ -34,7 +34,7 @@ export const getPreviousTemperature = (hourlyData, observedAt) => {
   const currentHour = new Date(currentDate)
   currentHour.setMinutes(0, 0, 0)
 
-  const previousTime = currentHour.getTime() - (60 * 60 * 1000)
+  const previousTime = currentHour.getTime() - 60 * 60 * 1000
   const timeline = getAllHourlyTemperatures(hourlyData)
 
   if (!timeline.length) return null
@@ -76,10 +76,8 @@ export const mergeWeatherData = (cities, currentResponse, hourlyResponse) => {
       details: currentWeatherData?.details ?? null,
       sunrise: currentWeatherData?.sunrise ?? '',
       sunset: currentWeatherData?.sunset ?? '',
-      temperatureChange: currentTemp !== null && prevTemp !== null
-        ? currentTemp - prevTemp
-        : null,
-      status: weatherStatus || currentWeatherData?.openWeatherDescription || '알 수 없음'
+      temperatureChange: currentTemp !== null && prevTemp !== null ? currentTemp - prevTemp : null,
+      status: weatherStatus || currentWeatherData?.openWeatherDescription || '알 수 없음',
     }
   })
 }

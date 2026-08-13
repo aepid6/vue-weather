@@ -11,12 +11,7 @@ import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 
 const route = useRoute()
 const router = useRouter()
-const {
-  loading,
-  loadingProgress,
-  updateLoading,
-  completeLoading
-} = useWeatherLoading()
+const { loading, loadingProgress, updateLoading, completeLoading } = useWeatherLoading()
 const error = ref('')
 const weather = ref(null)
 const city = computed(() => CITIES.find((item) => item.id === route.params.cityId))
@@ -37,7 +32,7 @@ const formatTime = (time, options = {}) => {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-    ...options
+    ...options,
   })
 }
 
@@ -49,7 +44,7 @@ const observedTime = computed(() => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
   })
 })
 
@@ -74,9 +69,7 @@ const currentTimelineIndex = computed(() => {
 })
 
 const forecastBarHeight = (temperature) => {
-  const temperatures = (weather.value?.temperatureTimeline ?? [])
-    .map((hour) => hour.temp)
-    .filter(Number.isFinite)
+  const temperatures = (weather.value?.temperatureTimeline ?? []).map((hour) => hour.temp).filter(Number.isFinite)
 
   if (!temperatures.length || !Number.isFinite(temperature)) return 34
 
@@ -86,7 +79,7 @@ const forecastBarHeight = (temperature) => {
 
   if (range === 0) return 60
 
-  return 28 + (((temperature - minimum) / range) * 68)
+  return 28 + ((temperature - minimum) / range) * 68
 }
 
 const forecastHeightClass = (temperature) => {
@@ -113,7 +106,7 @@ const detailItems = computed(() => {
     { type: 'visibility', label: '가시거리', value: Number.isFinite(details.visibility) ? (details.visibility / 1000).toFixed(1) : null, unit: ' km' },
     { type: 'cloud', label: '운량', value: details.cloudiness, unit: '%' },
     { type: 'sunrise', label: '일출', value: formatTime(weather.value?.sunrise), unit: '' },
-    { type: 'sunset', label: '일몰', value: formatTime(weather.value?.sunset), unit: '' }
+    { type: 'sunset', label: '일몰', value: formatTime(weather.value?.sunset), unit: '' },
   ]
 })
 
@@ -134,14 +127,10 @@ const loadWeather = async () => {
       getHourlyWeatherAPI(city.value).then((response) => {
         updateLoading(84, '시간별 예보를 받았습니다.')
         return response
-      })
+      }),
     ])
-    const currentResponse = currentResult.status === 'fulfilled'
-      ? { data: [currentResult.value] }
-      : null
-    const hourlyResponse = hourlyResult.status === 'fulfilled'
-      ? { data: [hourlyResult.value] }
-      : null
+    const currentResponse = currentResult.status === 'fulfilled' ? { data: [currentResult.value] } : null
+    const hourlyResponse = hourlyResult.status === 'fulfilled' ? { data: [hourlyResult.value] } : null
 
     if (!currentResponse && !hourlyResponse) throw new Error('날씨 API 요청에 실패했습니다.')
     weather.value = mergeWeatherData([city.value], currentResponse, hourlyResponse)[0]
@@ -184,7 +173,9 @@ onMounted(loadWeather)
         <span class="detail-metric-icon" :class="`metric-icon--${item.type}`" aria-hidden="true"><i></i><b></b></span>
         <div>
           <p>{{ item.label }}</p>
-          <strong>{{ item.value ?? '--' }}<small>{{ item.unit }}</small></strong>
+          <strong
+            >{{ item.value ?? '--' }}<small>{{ item.unit }}</small></strong
+          >
           <em v-if="item.note">{{ item.note }}풍</em>
         </div>
       </article>
@@ -199,11 +190,7 @@ onMounted(loadWeather)
         <span>Open-Meteo 예보</span>
       </div>
       <div v-if="weather.temperatureTimeline.length" class="detail-forecast-track">
-        <article
-          v-for="(hour, index) in weather.temperatureTimeline"
-          :key="hour.time"
-          :class="{ current: index === currentTimelineIndex }"
-        >
+        <article v-for="(hour, index) in weather.temperatureTimeline" :key="hour.time" :class="{ current: index === currentTimelineIndex }">
           <strong>{{ formatTemperature(hour.temp) }}°</strong>
           <i :class="forecastHeightClass(hour.temp)"></i>
           <span>{{ index === currentTimelineIndex ? '현재' : formatTime(hour.time, { minute: undefined }) }}</span>

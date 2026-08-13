@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { getWeatherStatus, getWMOWeatherStatus } from '@/constants/weatherCode'
-import {
-  formatTemperature,
-  getPreviousTemperature,
-  getTemperatureTimeline,
-} from '@/utils/weather'
+import { formatTemperature, getPreviousTemperature, getTemperatureTimeline } from '@/utils/weather'
 
 const hourlyData = {
   hourly: {

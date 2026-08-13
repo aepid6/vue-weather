@@ -1,15 +1,15 @@
 export const WEATHER_CODES = {
-  '뇌우': 'storm',
-  '이슬비': 'rain',
+  뇌우: 'storm',
+  이슬비: 'rain',
   '약한 비': 'rain',
-  '비': 'rain',
+  비: 'rain',
   '강한 비': 'rain',
-  '눈': 'snow',
-  '안개': 'fog',
-  '맑음': 'sunny',
+  눈: 'snow',
+  안개: 'fog',
+  맑음: 'sunny',
   '대체로 맑음': 'partly-cloudy',
   '구름 조금': 'partly-cloudy',
-  '흐림': 'cloudy'
+  흐림: 'cloudy',
 }
 
 export const getWeatherStatus = (openWeatherCode) => {

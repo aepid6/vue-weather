@@ -7,28 +7,28 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/detail/:cityId',
       name: 'Detail',
-      component: () => import('@/views/WeatherDetailView.vue')
+      component: () => import('@/views/WeatherDetailView.vue'),
     },
     {
       path: '/about',
       name: 'About',
-      component: () => import('@/views/WeatherAboutView.vue')
+      component: () => import('@/views/WeatherAboutView.vue'),
     },
     {
       path: '/cities',
       name: 'Cities',
-      component: () => import('@/views/WeatherListView.vue')
+      component: () => import('@/views/WeatherListView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: () => import('@/views/NotFoundView.vue')
-    }
+      component: () => import('@/views/NotFoundView.vue'),
+    },
   ],
 })
 
