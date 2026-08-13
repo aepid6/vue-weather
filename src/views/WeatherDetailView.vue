@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { CITIES } from '@/constants/cities'
 import { getCurrentWeatherAPI, getHourlyWeatherAPI } from '@/services/weatherAPI'
 import { formatTemperature, mergeWeatherData } from '@/utils/weather'
@@ -9,10 +9,20 @@ import LOADING from '@/components/WeatherLoading.vue'
 import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 
 const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const error = ref('')
 const weather = ref(null)
 const city = computed(() => CITIES.find((item) => item.id === route.params.cityId))
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+    return
+  }
+
+  router.push({ name: 'Cities' })
+}
 
 const formatTime = (time, options = {}) => {
   if (!time) return '--'
@@ -45,6 +55,33 @@ const temperatureChangeText = computed(() => {
 
   return `1시간 전보다 ${change > 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(1)}°C`
 })
+
+const currentTimelineIndex = computed(() => {
+  const timeline = weather.value?.temperatureTimeline ?? []
+  const currentTime = weather.value?.observedAt
+  const currentTimestamp = new Date(currentTime).getTime()
+
+  if (!Number.isFinite(currentTimestamp)) return 0
+
+  const pastHourCount = timeline.filter((hour) => new Date(hour.time).getTime() <= currentTimestamp).length
+  return Math.max(0, pastHourCount - 1)
+})
+
+const forecastBarHeight = (temperature) => {
+  const temperatures = (weather.value?.temperatureTimeline ?? [])
+    .map((hour) => hour.temp)
+    .filter(Number.isFinite)
+
+  if (!temperatures.length || !Number.isFinite(temperature)) return 34
+
+  const minimum = Math.min(...temperatures)
+  const maximum = Math.max(...temperatures)
+  const range = maximum - minimum
+
+  if (range === 0) return 60
+
+  return 28 + (((temperature - minimum) / range) * 68)
+}
 
 const windDirection = computed(() => {
   const degrees = weather.value?.details?.windDirection
@@ -105,10 +142,10 @@ onMounted(loadWeather)
   <LOADING v-if="loading" />
   <section v-else-if="error" class="weather-detail-error">
     <p>{{ error }}</p>
-    <RouterLink to="/cities">도시 목록으로 돌아가기</RouterLink>
+    <button type="button" @click="goBack">이전 화면으로 돌아가기</button>
   </section>
   <section v-else-if="weather" class="weather-detail-page">
-    <RouterLink class="detail-back" to="/cities"><span aria-hidden="true">←</span> 도시 목록</RouterLink>
+    <button type="button" class="detail-back" @click="goBack"><span aria-hidden="true">←</span> 뒤로가기</button>
 
     <article class="weather-detail-hero">
       <CITYSCENE :city="weather" />
@@ -139,15 +176,19 @@ onMounted(loadWeather)
       <div class="detail-section-heading">
         <div>
           <p>HOURLY FORECAST</p>
-          <h2>앞으로 12시간</h2>
+          <h2>기온 예보</h2>
         </div>
         <span>Open-Meteo 예보</span>
       </div>
       <div v-if="weather.temperatureTimeline.length" class="detail-forecast-track">
-        <article v-for="(hour, index) in weather.temperatureTimeline" :key="hour.time">
-          <span>{{ index === 0 ? '현재' : formatTime(hour.time, { minute: undefined }) }}</span>
-          <i :style="{ '--forecast-height': `${34 + Math.max(0, hour.temp - 10) * 2}px` }"></i>
-          <strong>{{ hour.temp }}°</strong>
+        <article
+          v-for="(hour, index) in weather.temperatureTimeline"
+          :key="hour.time"
+          :class="{ current: index === currentTimelineIndex }"
+        >
+          <strong>{{ formatTemperature(hour.temp) }}°</strong>
+          <i :style="{ '--forecast-height': `${forecastBarHeight(hour.temp)}px` }"></i>
+          <span>{{ index === currentTimelineIndex ? '현재' : formatTime(hour.time, { minute: undefined }) }}</span>
         </article>
       </div>
       <p v-else class="detail-forecast-empty">시간별 예보를 현재 불러올 수 없습니다.</p>

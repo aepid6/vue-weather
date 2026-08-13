@@ -93,9 +93,11 @@ export const getAllHourlyWeatherAPI = async () => {
     params: {
       latitude: CITIES.map((city) => city.lat).join(','),
       longitude: CITIES.map((city) => city.lon).join(','),
-      hourly: 'temperature_2m',
-      past_hours: 1,
-      forecast_hours: 12,
+      hourly: 'temperature_2m,weather_code',
+      daily: 'temperature_2m_max,temperature_2m_min',
+      past_hours: 3,
+      forecast_hours: 9,
+      forecast_days: 1,
       timezone: 'Asia/Seoul'
     }
   })
@@ -106,9 +108,11 @@ export const getHourlyWeatherAPI = async (city) => {
     params: {
       latitude: city.lat,
       longitude: city.lon,
-      hourly: 'temperature_2m',
-      past_hours: 1,
-      forecast_hours: 12,
+      hourly: 'temperature_2m,weather_code',
+      daily: 'temperature_2m_max,temperature_2m_min',
+      past_hours: 3,
+      forecast_hours: 9,
+      forecast_days: 1,
       timezone: 'Asia/Seoul'
     }
   })

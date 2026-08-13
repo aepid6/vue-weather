@@ -1,5 +1,6 @@
 <script setup>
 import { computed, nextTick, ref, watch } from 'vue'
+import INPUTTEXT from 'primevue/inputtext'
 import { CITIES } from '@/constants/cities'
 import { matchesCityName } from '@/utils/search'
 
@@ -90,7 +91,8 @@ watch(suggestions, () => {
   <div class="search-bar">
     <label class="search-input-wrap">
       <span aria-hidden="true">⌕</span>
-      <input
+      <INPUTTEXT
+        class="min-w-0 flex-1"
         type="text"
         role="combobox"
         autocomplete="off"
@@ -103,7 +105,7 @@ watch(suggestions, () => {
         @focus="isOpen = true"
         @blur="isOpen = false"
         @keydown="handleKeydown"
-      >
+      />
     </label>
     <ul v-if="showSuggestions" :id="listboxId" ref="listboxElement" class="search-suggestions" role="listbox">
       <li

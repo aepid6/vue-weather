@@ -27,3 +27,18 @@ export const getWeatherStatus = (openWeatherCode) => {
 
   return null
 }
+
+export const getWMOWeatherStatus = (weatherCode) => {
+  if (weatherCode === 0) return '맑음'
+  if (weatherCode === 1) return '대체로 맑음'
+  if (weatherCode === 2) return '구름 조금'
+  if (weatherCode === 3) return '흐림'
+  if ([45, 48].includes(weatherCode)) return '안개'
+  if ([51, 53, 55, 56, 57].includes(weatherCode)) return '이슬비'
+  if ([61, 63, 66].includes(weatherCode)) return '비'
+  if ([65, 67, 80, 81, 82].includes(weatherCode)) return '강한 비'
+  if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) return '눈'
+  if ([95, 96, 99].includes(weatherCode)) return '뇌우'
+
+  return null
+}

@@ -8,7 +8,7 @@ import {
   getSunTimeAPI
 } from '@/services/weatherAPI'
 import { mergeWeatherData } from '@/utils/weather'
-import { setAutomaticTheme, themePreference } from '@/utils/theme'
+import { useThemeStore } from '@/stores/theme'
 import { CITIES } from '@/constants/cities'
 // 컴포넌트
 import LOADING from '@/components/WeatherLoading.vue'
@@ -18,6 +18,7 @@ import CURRENTLOCATION from '@/components/WeatherCurrentLocation.vue'
 
 // 반응형 변수
 const currentTime = ref(new Date())
+const themeStore = useThemeStore()
 const selectedCityId = ref('')
 const currentLocationCityId = ref('seoul')
 const weatherList = ref([...CITIES])
@@ -95,13 +96,13 @@ const updateTimeTheme = () => {
   midnight.setHours(24, 0, 0, 0)
 
   if (now >= sunrise && now < noon) {
-    setAutomaticTheme('morning')
+    themeStore.setAutomaticTheme('morning')
   } else if (now >= noon && now < sunset) {
-    setAutomaticTheme('afternoon')
+    themeStore.setAutomaticTheme('afternoon')
   } else if (now >= sunset && now < midnight) {
-    setAutomaticTheme('evening')
+    themeStore.setAutomaticTheme('evening')
   } else {
-    setAutomaticTheme('night')
+    themeStore.setAutomaticTheme('night')
   }
 }
 
@@ -128,7 +129,6 @@ onMounted(() => {
   loadCurrentLocation()
 })
 watch(currentLocationCityId, loadSunTimes, { immediate: true })
-watch(themePreference, updateTimeTheme)
 
 // 타이머 (15분 단위 업데이트)
 const timer = setInterval(() => {

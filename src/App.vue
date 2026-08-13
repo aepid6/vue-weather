@@ -1,6 +1,10 @@
 <script setup>
-import { computed, watch } from 'vue'
-import { applyTimeTheme, automaticTheme, themePreference } from '@/utils/theme'
+import { storeToRefs } from 'pinia'
+import SELECT from 'primevue/select'
+import { useThemeStore } from '@/stores/theme'
+
+const themeStore = useThemeStore()
+const { themePreference, resolvedTheme } = storeToRefs(themeStore)
 
 const themeOptions = [
   { value: 'auto', label: '자동' },
@@ -10,13 +14,6 @@ const themeOptions = [
   { value: 'night', label: '밤' }
 ]
 
-const resolvedTheme = computed(() => {
-  return themePreference.value === 'auto' ? automaticTheme.value : themePreference.value
-})
-
-watch(themePreference, (theme) => {
-  applyTimeTheme(theme === 'auto' ? automaticTheme.value : theme)
-}, { immediate: true })
 </script>
 
 <template>
@@ -40,11 +37,22 @@ watch(themePreference, (theme) => {
     <div class="header-nav">
       <label class="theme-selector">
         <span class="sr-only">테마 선택</span>
-        <select v-model="themePreference" aria-label="테마 선택">
-          <option v-for="theme in themeOptions" :key="theme.value" :value="theme.value">
-            {{ theme.label }}
-          </option>
-        </select>
+        <SELECT
+          v-model="themePreference"
+          :options="themeOptions"
+          optionLabel="label"
+          optionValue="value"
+          aria-label="테마 선택"
+          appendTo="self"
+          :pt="{
+            root: { class: 'p-select flex h-[34px] cursor-pointer items-center rounded-[10px] border border-white/10 bg-slate-950/55 text-[10px] font-bold text-cyan-100 outline-none transition focus-within:border-cyan-300/60 focus-within:ring-3 focus-within:ring-cyan-300/10' },
+            label: { class: 'min-w-0 flex-1 px-2.5 font-mono' },
+            dropdown: { class: 'grid w-7 place-items-center text-cyan-200/70' },
+            overlay: { class: 'p-select-overlay mt-1 overflow-hidden rounded-xl border border-white/10 bg-slate-950/95 p-1 shadow-2xl backdrop-blur-xl' },
+            list: { class: 'grid gap-0.5' },
+            option: { class: 'p-select-option cursor-pointer rounded-lg px-2.5 py-2 font-mono text-[10px] text-slate-300 outline-none transition hover:bg-white/10 hover:text-white' }
+          }"
+        />
       </label>
       <nav aria-label="주요 메뉴">
         <RouterLink to="/">Home</RouterLink>

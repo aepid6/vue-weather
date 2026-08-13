@@ -1,3 +1,5 @@
+import { getWMOWeatherStatus } from '@/constants/weatherCode'
+
 export const formatTemperature = (temperature) => {
   return Number.isFinite(temperature) ? temperature.toFixed(1) : '--'
 }
@@ -10,7 +12,8 @@ const getAllHourlyTemperatures = (hourlyData) => {
   return hourly.time
     .map((time, index) => ({
       time,
-      temp: hourly.temperature_2m[index]
+      temp: hourly.temperature_2m[index],
+      weatherStatus: getWMOWeatherStatus(hourly.weather_code?.[index])
     }))
     .filter((hour) => Number.isFinite(hour.temp))
 }
@@ -19,8 +22,10 @@ export const getTemperatureTimeline = (hourlyData, observedAt) => {
   const currentHour = new Date(observedAt || Date.now())
   currentHour.setMinutes(0, 0, 0)
 
+  const timelineStart = currentHour.getTime() - (3 * 60 * 60 * 1000)
+
   return getAllHourlyTemperatures(hourlyData)
-    .filter((hour) => new Date(hour.time).getTime() >= currentHour.getTime())
+    .filter((hour) => new Date(hour.time).getTime() >= timelineStart)
     .slice(0, 12)
 }
 
@@ -56,12 +61,16 @@ export const mergeWeatherData = (cities, currentResponse, hourlyResponse) => {
     const observedAt = current?.time ?? ''
     const temperatureTimeline = getTemperatureTimeline(hourlyWeatherData, observedAt)
     const prevTemp = getPreviousTemperature(hourlyWeatherData, observedAt)
+    const todayHigh = hourlyWeatherData?.daily?.temperature_2m_max?.[0] ?? null
+    const todayLow = hourlyWeatherData?.daily?.temperature_2m_min?.[0] ?? null
 
     return {
       ...city,
       temperatureTimeline,
       currentTemp,
       prevTemp,
+      todayHigh,
+      todayLow,
       observedAt,
       weatherStatus,
       details: currentWeatherData?.details ?? null,

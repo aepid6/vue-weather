@@ -1,18 +1,22 @@
 <script setup>
 // vue 메서드
-import { ref, computed, watch, watchEffect, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 // js 파일 (상수, 함수)
 import { getAllCurrentWeatherAPI, getAllHourlyWeatherAPI, getSunTimeAPI } from '@/services/weatherAPI'
 import { mergeWeatherData } from '@/utils/weather'
 import { matchesCityName } from '@/utils/search'
 import { calculateDistance } from '@/utils/utils'
 import { CITIES } from '@/constants/cities'
+import { useFavoritesStore } from '@/stores/favorites'
+import BUTTON from 'primevue/button'
 // 컴포넌트
 import BASEDASHBOARD from '@/components/BaseDashboardCard.vue'
 import SEARCH from '@/components/SearchBar.vue'
 import CARD from '@/components/WeatherCard.vue'
 import CITYPANEL from '@/components/WeatherCityPanel.vue'
 import LOADING from '@/components/WeatherLoading.vue'
+import FAVORITES from '@/components/WeatherFavorites.vue'
 
 // 반응형 변수
 const searchQuery = ref('')
@@ -24,7 +28,15 @@ const currentTime = ref(new Date())
 const sunTimes = ref(null)
 const weatherList = ref([...CITIES])
 const loading = ref(true)
+const favoritesStore = useFavoritesStore()
+const { favoriteCityIds } = storeToRefs(favoritesStore)
+const { toggleFavorite } = favoritesStore
+
 const selectedCity = computed(() => weatherList.value.find((city) => city.id === selectedCityId.value))
+const favoriteCities = computed(() => favoriteCityIds.value
+  .map((cityId) => weatherList.value.find((city) => city.id === cityId))
+  .filter(Boolean))
+
 const introSky = computed(() => {
   if (!sunTimes.value?.sunrise || !sunTimes.value?.sunset) {
     const hour = currentTime.value.getHours()
@@ -36,6 +48,7 @@ const introSky = computed(() => {
 
   return isDaytime ? { state: 'day' } : { state: 'night' }
 })
+
 const referenceTime = computed(() => {
   const latestObservedAt = weatherList.value
     .map((city) => city.observedAt)
@@ -150,9 +163,6 @@ const FilteredWeatherList = computed(() => {
   })
 })
 
-watchEffect(() => {
-  selectedCityId.value
-})
 </script>
 
 <template>
@@ -175,16 +185,20 @@ watchEffect(() => {
       </template>
       <template v-slot:content>
         <div class="region-filters" role="group" aria-label="지역별 도시 필터">
-          <button
+          <BUTTON
             v-for="region in regions"
             :key="region"
             :class="{ active: selectedRegion === region }"
             @click="selectedRegion = region"
           >
             {{ region }}
-          </button>
+          </BUTTON>
         </div>
         <SEARCH v-model:searchQuery="searchQuery" />
+        <FAVORITES
+          :cities="favoriteCities"
+          @remove="toggleFavorite"
+        />
       </template>
     </BASEDASHBOARD>
     <div class="weather-results-layout" :class="{ 'has-selected-city': selectedCity }">
@@ -194,15 +208,20 @@ watchEffect(() => {
             <p class="card-title">지역별 날씨 현황</p>
             <div class="weather-list-controls">
               <div class="weather-sort-options" role="group" aria-label="도시 정렬 방식">
-                <button :class="{ active: sortOption === 'distance' }" @click="sortOption = 'distance'">거리순</button>
-                <button :class="{ active: sortOption === 'name' }" @click="sortOption = 'name'">이름순</button>
+                <BUTTON :class="{ active: sortOption === 'distance' }" @click="sortOption = 'distance'">거리순</BUTTON>
+                <BUTTON :class="{ active: sortOption === 'name' }" @click="sortOption = 'name'">이름순</BUTTON>
               </div>
               <span>{{ referenceTime }}</span>
             </div>
           </div>
         </template>
         <template v-slot:content>
-          <CARD :weatherList="FilteredWeatherList" v-model:selectedCityId="selectedCityId" />
+          <CARD
+            :weatherList="FilteredWeatherList"
+            :favoriteCityIds="favoriteCityIds"
+            v-model:selectedCityId="selectedCityId"
+            @toggle-favorite="toggleFavorite"
+          />
         </template>
       </BASEDASHBOARD>
       <aside v-if="selectedCity" class="weather-list-detail" aria-label="선택한 도시 날씨 정보">
