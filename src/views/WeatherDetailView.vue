@@ -4,13 +4,19 @@ import { useRoute, useRouter } from 'vue-router'
 import { CITIES } from '@/constants/cities'
 import { getCurrentWeatherAPI, getHourlyWeatherAPI } from '@/services/weatherAPI'
 import { formatTemperature, mergeWeatherData } from '@/utils/weather'
+import { useWeatherLoading } from '@/composables/useWeatherLoading'
 import CITYSCENE from '@/components/WeatherCityScene.vue'
 import LOADING from '@/components/WeatherLoading.vue'
 import WEATHERGRAPHIC from '@/components/WeatherGraphic.vue'
 
 const route = useRoute()
 const router = useRouter()
-const loading = ref(true)
+const {
+  loading,
+  loadingProgress,
+  updateLoading,
+  completeLoading
+} = useWeatherLoading()
 const error = ref('')
 const weather = ref(null)
 const city = computed(() => CITIES.find((item) => item.id === route.params.cityId))
@@ -83,6 +89,11 @@ const forecastBarHeight = (temperature) => {
   return 28 + (((temperature - minimum) / range) * 68)
 }
 
+const forecastHeightClass = (temperature) => {
+  const height = forecastBarHeight(temperature)
+  return `forecast-height--${Math.round(height / 4) * 4}`
+}
+
 const windDirection = computed(() => {
   const degrees = weather.value?.details?.windDirection
   const directions = ['북', '북동', '동', '남동', '남', '남서', '서', '북서']
@@ -109,14 +120,21 @@ const detailItems = computed(() => {
 const loadWeather = async () => {
   if (!city.value) {
     error.value = '도시 정보를 찾을 수 없습니다.'
-    loading.value = false
+    await completeLoading()
     return
   }
 
   try {
+    updateLoading(10, `${city.value.name}의 날씨 서버에 연결하고 있습니다.`)
     const [currentResult, hourlyResult] = await Promise.allSettled([
-      getCurrentWeatherAPI(city.value),
-      getHourlyWeatherAPI(city.value)
+      getCurrentWeatherAPI(city.value).then((response) => {
+        updateLoading(58, '현재 관측 정보를 받았습니다.')
+        return response
+      }),
+      getHourlyWeatherAPI(city.value).then((response) => {
+        updateLoading(84, '시간별 예보를 받았습니다.')
+        return response
+      })
     ])
     const currentResponse = currentResult.status === 'fulfilled'
       ? { data: [currentResult.value] }
@@ -131,7 +149,7 @@ const loadWeather = async () => {
     console.error('상세 날씨 정보를 불러오지 못했습니다.', requestError)
     error.value = '상세 날씨 정보를 불러오지 못했습니다.'
   } finally {
-    loading.value = false
+    await completeLoading()
   }
 }
 
@@ -139,7 +157,7 @@ onMounted(loadWeather)
 </script>
 
 <template>
-  <LOADING v-if="loading" />
+  <LOADING v-if="loading" :progress="loadingProgress" />
   <section v-else-if="error" class="weather-detail-error">
     <p>{{ error }}</p>
     <button type="button" @click="goBack">이전 화면으로 돌아가기</button>
@@ -187,7 +205,7 @@ onMounted(loadWeather)
           :class="{ current: index === currentTimelineIndex }"
         >
           <strong>{{ formatTemperature(hour.temp) }}°</strong>
-          <i :style="{ '--forecast-height': `${forecastBarHeight(hour.temp)}px` }"></i>
+          <i :class="forecastHeightClass(hour.temp)"></i>
           <span>{{ index === currentTimelineIndex ? '현재' : formatTime(hour.time, { minute: undefined }) }}</span>
         </article>
       </div>

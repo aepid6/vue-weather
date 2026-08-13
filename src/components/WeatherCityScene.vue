@@ -9,7 +9,7 @@ const props = defineProps({
   compact: Boolean
 })
 
-const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '창원', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
+const portCities = ['부산', '울산', '포항', '인천', '목포', '여수', '강릉', '속초', '동해', '삼척', '서산', '보령', '군산', '광양', '통영', '거제']
 const mountainCities = ['춘천', '원주', '태백', '홍천', '충주', '제천', '영주', '문경', '김천']
 const heritageCities = ['전주', '경주', '안동', '공주', '남원']
 
@@ -21,16 +21,12 @@ const sceneType = computed(() => {
   return 'city'
 })
 
-const cityIndex = computed(() => {
-  return [...props.city.id].reduce((total, character) => total + character.charCodeAt(0), 0)
-})
 </script>
 
 <template>
   <div
     class="city-scene"
     :class="[`scene-${sceneType}`, { compact }]"
-    :style="{ '--city-scene-index': cityIndex }"
     aria-hidden="true"
   >
     <span class="scene-light"></span>
@@ -98,7 +94,7 @@ const cityIndex = computed(() => {
         <i class="palm-leaf leaf-five"></i>
       </div>
       <div class="jeju-stone-wall">
-        <i v-for="stone in 7" :key="stone" :style="{ '--stone-index': stone }"></i>
+        <i v-for="stone in 7" :key="stone" :class="`stone--${stone}`"></i>
       </div>
       <i class="jeju-wind wind-one"></i>
       <i class="jeju-wind wind-two"></i>

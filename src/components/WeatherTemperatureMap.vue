@@ -17,37 +17,12 @@ const koreaMapURL = `${import.meta.env.BASE_URL}korea-provinces.svg`
 
 // SVG의 광역시 경계 중심점과 실제 위도·경도를 대조해 계산한 보정 계수입니다.
 // 새 도시를 CITIES에 추가하면 lat/lon만으로 SVG viewBox(800 × 760) 좌표가 계산됩니다.
-const svgProjection = {
-  width: 800,
-  height: 760,
-  xFromLongitude: 113.062317,
-  xFromLatitude: 3.090174,
-  xOffset: -14213.123706,
-  yFromLongitude: -0.725762,
-  yFromLatitude: -135.653151,
-  yOffset: 5337.531217
-}
-
-const projectCity = (city) => {
-  const x = (city.lon * svgProjection.xFromLongitude)
-    + (city.lat * svgProjection.xFromLatitude)
-    + svgProjection.xOffset
-  const y = (city.lon * svgProjection.yFromLongitude)
-    + (city.lat * svgProjection.yFromLatitude)
-    + svgProjection.yOffset
-
-  return {
-    left: `${Math.min(100, Math.max(0, (x / svgProjection.width) * 100))}%`,
-    top: `${Math.min(100, Math.max(0, (y / svgProjection.height) * 100))}%`
-  }
-}
-
-const temperatureColor = (temperature) => {
-  if (temperature === null || temperature === undefined) return '#8ba5b6'
-  if (temperature < 10) return '#70d9ff'
-  if (temperature < 20) return '#84e8ca'
-  if (temperature < 27) return '#ffe18b'
-  return '#ff8d79'
+const temperatureClass = (temperature) => {
+  if (!Number.isFinite(temperature)) return 'temperature-unknown'
+  if (temperature < 10) return 'temperature-cold'
+  if (temperature < 20) return 'temperature-mild'
+  if (temperature < 27) return 'temperature-warm'
+  return 'temperature-hot'
 }
 
 const referenceTime = computed(() => {
@@ -83,8 +58,11 @@ const referenceTime = computed(() => {
           v-for="city in props.weatherList"
           :key="city.id"
           class="map-city"
-          :class="{ 'is-current-location': city.id === props.currentLocationId }"
-          :style="{ ...projectCity(city), '--temperature-color': temperatureColor(city.currentTemp) }"
+          :class="[
+            `map-city--${city.id}`,
+            temperatureClass(city.currentTemp),
+            { 'is-current-location': city.id === props.currentLocationId }
+          ]"
           :aria-label="`${city.name} ${city.currentTemp ?? '정보 없음'}도 선택`"
           @click="emit('select-city', city.id)"
         >

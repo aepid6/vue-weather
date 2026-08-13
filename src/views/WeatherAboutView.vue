@@ -29,7 +29,7 @@ const architecture = [
     number: '01',
     label: 'Vue 3 Composition API',
     title: '반응형 변수',
-    copy: '화면마다 필요한 상태는 ref에 담고, 원본 상태에서 계산되는 값은 computed로 구성했습니다. watch와 15분 타이머가 위치, 기온, 일출·일몰의 변화를 감지해 화면을 다시 계산합니다.',
+    copy: '화면마다 필요한 상태는 ref에 담고, 원본 상태에서 계산되는 값은 computed로 구성했습니다. watch가 위치, 기온과 테마 상태의 변화를 감지해 화면을 다시 계산합니다.',
     points: ['ref · computed · watch', '검색어와 선택 도시', '필터 목록과 예보 그래프'],
     services: ['현재 위치 기반 날씨', '도시 검색·필터·정렬', '12시간 예보 그래프', '일출·일몰 반영']
   },
@@ -85,7 +85,6 @@ const architecture = [
       </div>
       <div class="about-overview-stats">
         <div><strong>{{ CITIES.length }}</strong><span>전국 도시</span></div>
-        <div><strong>15분</strong><span>데이터 갱신</span></div>
         <div><strong>12시간</strong><span>시간별 날씨 예보</span></div>
       </div>
     </section>

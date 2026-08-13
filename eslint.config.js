@@ -26,5 +26,13 @@ export default defineConfig([
 
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
+  {
+    name: 'custom-rules',
+    rules: {
+      'no-unused-vars': 'warn',
+      'no-console': 'off',
+    },
+  },
+
   skipFormatting,
 ])

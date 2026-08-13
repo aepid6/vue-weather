@@ -1,14 +1,16 @@
 <script setup>
 // vue 메서드
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 // js 파일 (상수, 함수)
-import { getAllCurrentWeatherAPI, getAllHourlyWeatherAPI, getSunTimeAPI } from '@/services/weatherAPI'
+import { getAllCurrentWeatherAPI, getAllHourlyWeatherAPI } from '@/services/weatherAPI'
 import { mergeWeatherData } from '@/utils/weather'
+import { useWeatherLoading } from '@/composables/useWeatherLoading'
 import { matchesCityName } from '@/utils/search'
 import { calculateDistance } from '@/utils/utils'
 import { CITIES } from '@/constants/cities'
 import { useFavoritesStore } from '@/stores/favorites'
+import { useThemeStore } from '@/stores/theme'
 import BUTTON from 'primevue/button'
 // 컴포넌트
 import BASEDASHBOARD from '@/components/BaseDashboardCard.vue'
@@ -24,12 +26,17 @@ const selectedRegion = ref('전체')
 const selectedCityId = ref('')
 const sortOption = ref('distance')
 const currentCoordinates = ref({ lat: CITIES[0].lat, lon: CITIES[0].lon })
-const currentTime = ref(new Date())
-const sunTimes = ref(null)
 const weatherList = ref([...CITIES])
-const loading = ref(true)
+const {
+  loading,
+  loadingProgress,
+  updateLoading,
+  completeLoading
+} = useWeatherLoading()
 const favoritesStore = useFavoritesStore()
+const themeStore = useThemeStore()
 const { favoriteCityIds } = storeToRefs(favoritesStore)
+const { resolvedTheme } = storeToRefs(themeStore)
 const { toggleFavorite } = favoritesStore
 
 const selectedCity = computed(() => weatherList.value.find((city) => city.id === selectedCityId.value))
@@ -37,17 +44,9 @@ const favoriteCities = computed(() => favoriteCityIds.value
   .map((cityId) => weatherList.value.find((city) => city.id === cityId))
   .filter(Boolean))
 
-const introSky = computed(() => {
-  if (!sunTimes.value?.sunrise || !sunTimes.value?.sunset) {
-    const hour = currentTime.value.getHours()
-    return hour >= 6 && hour < 18 ? { state: 'day' } : { state: 'night' }
-  }
-
-  const isDaytime = currentTime.value >= new Date(sunTimes.value.sunrise)
-    && currentTime.value < new Date(sunTimes.value.sunset)
-
-  return isDaytime ? { state: 'day' } : { state: 'night' }
-})
+const introSky = computed(() => ({
+  state: resolvedTheme.value === 'night' ? 'night' : 'day'
+}))
 
 const referenceTime = computed(() => {
   const latestObservedAt = weatherList.value
@@ -66,10 +65,45 @@ const referenceTime = computed(() => {
 
 // 날씨 데이터 가져오기
 const loadWeather = async () => {
+  const isInitialLoading = loading.value
+  let completedCities = 0
+  let hourlyReady = false
+
+  const updateRequestProgress = () => {
+    if (!isInitialLoading) return
+
+    if (completedCities < CITIES.length) {
+      updateLoading(
+        10 + ((completedCities / CITIES.length) * 62),
+        `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`
+      )
+      return
+    }
+
+    updateLoading(
+      hourlyReady ? 90 : 76,
+      hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.'
+    )
+  }
+
   try {
+    if (isInitialLoading) updateLoading(8, '날씨 API 연결을 준비하고 있습니다.')
+
     const [currentResult, hourlyResult] = await Promise.allSettled([
-      getAllCurrentWeatherAPI(),
-      getAllHourlyWeatherAPI()
+      getAllCurrentWeatherAPI({
+        force: !isInitialLoading,
+        onProgress: ({ completed }) => {
+          completedCities = completed
+          updateRequestProgress()
+        }
+      }),
+      getAllHourlyWeatherAPI({
+        force: !isInitialLoading,
+        onProgress: ({ completed, failed }) => {
+          hourlyReady = completed === 1 && !failed
+          updateRequestProgress()
+        }
+      })
     ])
     const currentResponse = currentResult.status === 'fulfilled' ? currentResult.value : null
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null
@@ -82,7 +116,7 @@ const loadWeather = async () => {
   } catch (err) {
     console.error('날씨 데이터를 불러오지 못했습니다.', err)
   } finally {
-    loading.value = false
+    if (isInitialLoading) await completeLoading()
   }
 }
 const loadCurrentLocation = () => {
@@ -106,30 +140,13 @@ const loadCurrentLocation = () => {
   )
 }
 
-const loadSunTimes = async (coordinates) => {
-  try {
-    const daily = await getSunTimeAPI(coordinates)
-    sunTimes.value = {
-      sunrise: daily.sunrise?.[0],
-      sunset: daily.sunset?.[0]
-    }
-  } catch (error) {
-    console.error('일출·일몰 정보를 불러오지 못했습니다.', error)
-  }
-}
-
-watch(currentCoordinates, loadSunTimes, { immediate: true })
-
 onMounted(() => {
   loadWeather()
   loadCurrentLocation()
 })
 
-// 타이머 (15분 단위 업데이트)
 const timer = setInterval(() => {
-  currentTime.value = new Date()
   loadWeather()
-  loadSunTimes(currentCoordinates.value)
 }, 15 * 60 * 1000)
 // Unmounted시 타이머 중지
 onUnmounted(() => {
@@ -167,16 +184,31 @@ const FilteredWeatherList = computed(() => {
 
 <template>
   <section v-if="loading">
-    <LOADING />
+    <LOADING :progress="loadingProgress" />
   </section>
   <section v-else class="weather-dashboard weather-list-view">
-    <div class="dashboard-intro">
-      <div>
-        <p class="eyebrow">LOCAL WEATHER</p>
-        <h1>오늘의 하늘을<br><em>한눈에</em> 살펴보세요.</h1>
+    <div class="dashboard-intro cities-dashboard-intro" :class="`cities-dashboard-intro--${resolvedTheme}`">
+      <div class="cities-intro-copy">
+        <p class="eyebrow"><span class="cities-live-signal" aria-hidden="true"></span>KOREA WEATHER NETWORK</p>
+        <h1>가까운 도시부터<br><em>오늘의 날씨</em>를 만나보세요.</h1>
+        <p class="cities-intro-description">지역과 도시를 검색하고, 현재 기온부터 체감 날씨까지 한곳에서 비교할 수 있어요.</p>
+        <div class="cities-intro-meta" aria-label="날씨 데이터 상태">
+          <span><i class="cities-meta-clock" aria-hidden="true"></i>{{ referenceTime }}</span>
+        </div>
       </div>
-      <div class="intro-orb" :class="`intro-orb--${introSky.state}`" aria-hidden="true">
-        <i class="intro-sky-object"></i><i class="intro-sky-cutout"></i><i class="intro-sky-ring"></i>
+      <div class="cities-intro-visual" aria-hidden="true">
+        <i class="cities-intro-star cities-intro-star--one"></i>
+        <i class="cities-intro-star cities-intro-star--two"></i>
+        <i class="cities-intro-star cities-intro-star--three"></i>
+        <span class="cities-intro-cloud cities-intro-cloud--one"></span>
+        <span class="cities-intro-cloud cities-intro-cloud--two"></span>
+        <div class="intro-orb" :class="`intro-orb--${introSky.state}`">
+          <i class="intro-sky-object"></i><i class="intro-sky-cutout"></i><i class="intro-sky-ring"></i>
+        </div>
+        <div class="cities-intro-skyline">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <span class="cities-intro-horizon"></span>
       </div>
     </div>
     <BASEDASHBOARD class="dashboard-card search-card">

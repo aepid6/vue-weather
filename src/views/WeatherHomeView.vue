@@ -8,6 +8,7 @@ import {
   getSunTimeAPI
 } from '@/services/weatherAPI'
 import { mergeWeatherData } from '@/utils/weather'
+import { useWeatherLoading } from '@/composables/useWeatherLoading'
 import { useThemeStore } from '@/stores/theme'
 import { CITIES } from '@/constants/cities'
 // 컴포넌트
@@ -22,7 +23,12 @@ const themeStore = useThemeStore()
 const selectedCityId = ref('')
 const currentLocationCityId = ref('seoul')
 const weatherList = ref([...CITIES])
-const loading = ref(true)
+const {
+  loading,
+  loadingProgress,
+  updateLoading,
+  completeLoading
+} = useWeatherLoading()
 const error = ref('')
 const sunTimes = ref(null)
 const selectedCity = computed(() => weatherList.value.find((city) => city.id === selectedCityId.value))
@@ -30,10 +36,45 @@ const currentLocation = computed(() => weatherList.value.find((city) => city.id 
 
 // 날씨 데이터 가져오기
 const loadWeather = async () => {
+  const isInitialLoading = loading.value
+  let completedCities = 0
+  let hourlyReady = false
+
+  const updateRequestProgress = () => {
+    if (!isInitialLoading) return
+
+    if (completedCities < CITIES.length) {
+      updateLoading(
+        10 + ((completedCities / CITIES.length) * 62),
+        `${completedCities}/${CITIES.length}개 도시의 현재 날씨를 확인하고 있습니다.`
+      )
+      return
+    }
+
+    updateLoading(
+      hourlyReady ? 90 : 76,
+      hourlyReady ? '시간별 예보를 모두 받았습니다.' : '시간별 예보를 불러오고 있습니다.'
+    )
+  }
+
   try {
+    if (isInitialLoading) updateLoading(8, '날씨 API 연결을 준비하고 있습니다.')
+
     const [currentResult, hourlyResult] = await Promise.allSettled([
-      getAllCurrentWeatherAPI(),
-      getAllHourlyWeatherAPI()
+      getAllCurrentWeatherAPI({
+        force: !isInitialLoading,
+        onProgress: ({ completed }) => {
+          completedCities = completed
+          updateRequestProgress()
+        }
+      }),
+      getAllHourlyWeatherAPI({
+        force: !isInitialLoading,
+        onProgress: ({ completed, failed }) => {
+          hourlyReady = completed === 1 && !failed
+          updateRequestProgress()
+        }
+      })
     ])
     const currentResponse = currentResult.status === 'fulfilled' ? currentResult.value : null
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null
@@ -47,7 +88,7 @@ const loadWeather = async () => {
     console.error('날씨 데이터를 불러오지 못했습니다.', err)
     error.value = '날씨 정보를 불러오지 못했습니다.'
   } finally {
-    loading.value = false
+    if (isInitialLoading) await completeLoading()
   }
 }
 const findNearestCity = (coordinates) => {
@@ -145,7 +186,7 @@ onUnmounted(() => {
 
 <template>
   <section v-if="loading">
-    <LOADING />
+    <LOADING :progress="loadingProgress" />
   </section>
   <section v-else class="weather-dashboard home-weather-dashboard">
     <CURRENTLOCATION :city="currentLocation" />
