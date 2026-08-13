@@ -95,4 +95,5 @@ const themeOptions = [
   </main>
 </template>
 
+<!-- prettier-ignore -->
 <style scoped></style>

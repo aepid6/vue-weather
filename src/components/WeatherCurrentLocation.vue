@@ -325,305 +325,60 @@ const formatTime = (time) => {
   </section>
 </template>
 
+<!-- prettier-ignore -->
 <style scoped>
-.fallback-metric-graphic {
-  width: 72px;
-  height: 72px;
-  position: relative;
-  place-self: center;
-  display: block;
-  color: var(--theme-accent);
-  filter: drop-shadow(0 0 12px color-mix(in srgb, currentColor 30%, transparent));
-  animation: fallback-graphic-float 4s ease-in-out infinite;
-}
-
-.fallback-metric-graphic b,
-.fallback-metric-graphic::before,
-.fallback-metric-graphic::after {
-  content: '';
-  position: absolute;
-  display: block;
-}
-
-.fallback-metric-graphic--pressure::before {
-  width: 52px;
-  height: 52px;
-  left: 10px;
-  top: 9px;
-  border: 3px solid currentColor;
-  border-bottom-color: color-mix(in srgb, currentColor 24%, transparent);
-  border-radius: 50%;
-  background: radial-gradient(circle, transparent 55%, color-mix(in srgb, currentColor 10%, transparent) 57%, transparent 60%), color-mix(in srgb, var(--theme-stage) 74%, transparent);
-  box-shadow: inset 0 0 16px color-mix(in srgb, currentColor 12%, transparent);
-}
-
-.fallback-metric-graphic--pressure::after {
-  width: 8px;
-  height: 8px;
-  left: 32px;
-  top: 33px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 9px currentColor;
-}
-
-.fallback-metric-graphic--pressure b {
-  width: 3px;
-  height: 23px;
-  left: 35px;
-  top: 14px;
-  border-radius: 3px;
-  background: currentColor;
-  transform: rotate(42deg);
-  transform-origin: 50% 100%;
-  animation: pressure-needle 4.8s ease-in-out infinite;
-}
-
-.fallback-metric-graphic--visibility::before {
-  width: 48px;
-  height: 17px;
-  left: 8px;
-  top: 38px;
-  border-radius: 18px;
-  background: currentColor;
-  box-shadow:
-    11px -10px 0 -3px currentColor,
-    27px -7px 0 -5px currentColor,
-    0 0 14px color-mix(in srgb, currentColor 28%, transparent);
-  transition:
-    opacity 0.3s,
-    transform 0.3s;
-  animation: visibility-cloud-drift 4.2s ease-in-out infinite;
-}
-
-.fallback-metric-graphic--visibility::after {
-  width: 39px;
-  height: 14px;
-  right: 5px;
-  top: 20px;
-  border-radius: 16px;
-  background: currentColor;
-  box-shadow:
-    9px -8px 0 -3px currentColor,
-    22px -5px 0 -5px currentColor;
-  transition:
-    opacity 0.3s,
-    transform 0.3s;
-  animation: visibility-cloud-drift 5s -2s ease-in-out infinite reverse;
-}
-
-.fallback-metric-graphic--visibility b {
-  width: 56px;
-  height: 1px;
-  left: 8px;
-  bottom: 7px;
-  opacity: 0.42;
-  background: linear-gradient(90deg, transparent, currentColor, transparent);
-  box-shadow: 0 -5px color-mix(in srgb, currentColor 50%, transparent);
-}
-
-.fallback-metric-graphic--visibility-clear::before {
-  opacity: 0.38;
-  transform: translate(10px, -3px) scale(0.72);
-}
-.fallback-metric-graphic--visibility-clear::after {
-  opacity: 0;
-  transform: translateX(16px) scale(0.65);
-}
-.fallback-metric-graphic--visibility-moderate::before {
-  opacity: 0.76;
-  transform: translate(2px, 0) scale(0.9);
-}
-.fallback-metric-graphic--visibility-moderate::after {
-  opacity: 0.38;
-  transform: translate(7px, -2px) scale(0.78);
-}
-.fallback-metric-graphic--visibility-cloudy::before {
-  opacity: 0.98;
-  transform: translate(-3px, 1px) scale(1.08);
-}
-.fallback-metric-graphic--visibility-cloudy::after {
-  opacity: 0.78;
-  transform: translate(-8px, 2px) scale(1.02);
-}
-.fallback-metric-graphic--visibility-unknown::before,
-.fallback-metric-graphic--visibility-unknown::after {
-  opacity: 0.3;
-  filter: grayscale(1);
-}
-
-.fallback-metric-graphic--weather::before {
-  width: 31px;
-  height: 31px;
-  left: 12px;
-  top: 9px;
-  border: 3px solid currentColor;
-  border-radius: 50%;
-  background: color-mix(in srgb, currentColor 22%, transparent);
-  box-shadow: 0 0 18px color-mix(in srgb, currentColor 34%, transparent);
-  transition:
-    opacity 0.25s,
-    transform 0.25s;
-}
-
-.fallback-metric-graphic--weather::after {
-  width: 43px;
-  height: 21px;
-  left: 20px;
-  top: 34px;
-  border: 3px solid currentColor;
-  border-radius: 18px;
-  background: var(--theme-stage);
-  box-shadow:
-    -13px 4px 0 -1px var(--theme-stage),
-    -15px 4px 0 2px currentColor,
-    inset 0 0 13px color-mix(in srgb, currentColor 12%, transparent);
-  transition:
-    opacity 0.25s,
-    transform 0.25s;
-}
-
-.fallback-metric-graphic--weather b {
-  width: 3px;
-  height: 9px;
-  left: 27px;
-  top: 59px;
-  border-radius: 4px;
-  opacity: 0;
-  background: currentColor;
-  box-shadow:
-    11px 0 currentColor,
-    22px 0 currentColor;
-}
-
-.fallback-metric-graphic--weather-clear::after {
-  opacity: 0;
-  transform: translate(8px, 5px) scale(0.7);
-}
-
-.fallback-metric-graphic--weather-clear::before {
-  left: 20px;
-  top: 19px;
-  transform: scale(1.2);
-}
-
-.fallback-metric-graphic--weather-cloud::before,
-.fallback-metric-graphic--weather-fog::before {
-  opacity: 0.24;
-  transform: translate(9px, 8px) scale(0.78);
-}
-
-.fallback-metric-graphic--weather-rain b,
-.fallback-metric-graphic--weather-snow b,
-.fallback-metric-graphic--weather-storm b,
-.fallback-metric-graphic--weather-fog b {
-  opacity: 0.9;
-}
-
-.fallback-metric-graphic--weather-rain b,
-.fallback-metric-graphic--weather-storm b {
-  transform: skewX(-16deg);
-  animation: weather-rain 1.15s linear infinite;
-}
-
-.fallback-metric-graphic--weather-snow b {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  animation: weather-snow 2.4s ease-in-out infinite;
-}
-
-.fallback-metric-graphic--weather-fog b {
-  width: 51px;
-  height: 2px;
-  left: 11px;
-  top: 58px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, transparent, currentColor 20% 80%, transparent);
-  box-shadow: 0 7px color-mix(in srgb, currentColor 72%, transparent);
-  animation: weather-fog 3s ease-in-out infinite;
-}
-
-.fallback-metric-graphic--weather-storm b {
-  height: 15px;
-  clip-path: polygon(44% 0, 100% 0, 66% 38%, 100% 38%, 15% 100%, 37% 55%, 0 55%);
-  box-shadow: none;
-}
-
+.fallback-metric-graphic { width: 72px; height: 72px; position: relative; place-self: center; display: block; color: var(--theme-accent); filter: drop-shadow(0 0 12px color-mix(in srgb, currentColor 30%, transparent)); animation: fallback-graphic-float 4s ease-in-out infinite; }
+.fallback-metric-graphic b, .fallback-metric-graphic::before, .fallback-metric-graphic::after { content: ''; position: absolute; display: block; }
+.fallback-metric-graphic--pressure::before { width: 52px; height: 52px; left: 10px; top: 9px; border: 3px solid currentColor; border-bottom-color: color-mix(in srgb, currentColor 24%, transparent); border-radius: 50%; background: radial-gradient(circle, transparent 55%, color-mix(in srgb, currentColor 10%, transparent) 57%, transparent 60%), color-mix(in srgb, var(--theme-stage) 74%, transparent); box-shadow: inset 0 0 16px color-mix(in srgb, currentColor 12%, transparent); }
+.fallback-metric-graphic--pressure::after { width: 8px; height: 8px; left: 32px; top: 33px; border-radius: 50%; background: currentColor; box-shadow: 0 0 9px currentColor; }
+.fallback-metric-graphic--pressure b { width: 3px; height: 23px; left: 35px; top: 14px; border-radius: 3px; background: currentColor; transform: rotate(42deg); transform-origin: 50% 100%; animation: pressure-needle 4.8s ease-in-out infinite; }
+.fallback-metric-graphic--visibility::before { width: 48px; height: 17px; left: 8px; top: 38px; border-radius: 18px; background: currentColor; box-shadow: 11px -10px 0 -3px currentColor, 27px -7px 0 -5px currentColor, 0 0 14px color-mix(in srgb, currentColor 28%, transparent); transition: opacity 0.3s, transform 0.3s; animation: visibility-cloud-drift 4.2s ease-in-out infinite; }
+.fallback-metric-graphic--visibility::after { width: 39px; height: 14px; right: 5px; top: 20px; border-radius: 16px; background: currentColor; box-shadow: 9px -8px 0 -3px currentColor, 22px -5px 0 -5px currentColor; transition: opacity 0.3s, transform 0.3s; animation: visibility-cloud-drift 5s -2s ease-in-out infinite reverse; }
+.fallback-metric-graphic--visibility b { width: 56px; height: 1px; left: 8px; bottom: 7px; opacity: 0.42; background: linear-gradient(90deg, transparent, currentColor, transparent); box-shadow: 0 -5px color-mix(in srgb, currentColor 50%, transparent); }
+.fallback-metric-graphic--visibility-clear::before { opacity: 0.38; transform: translate(10px, -3px) scale(0.72); }
+.fallback-metric-graphic--visibility-clear::after { opacity: 0; transform: translateX(16px) scale(0.65); }
+.fallback-metric-graphic--visibility-moderate::before { opacity: 0.76; transform: translate(2px, 0) scale(0.9); }
+.fallback-metric-graphic--visibility-moderate::after { opacity: 0.38; transform: translate(7px, -2px) scale(0.78); }
+.fallback-metric-graphic--visibility-cloudy::before { opacity: 0.98; transform: translate(-3px, 1px) scale(1.08); }
+.fallback-metric-graphic--visibility-cloudy::after { opacity: 0.78; transform: translate(-8px, 2px) scale(1.02); }
+.fallback-metric-graphic--visibility-unknown::before, .fallback-metric-graphic--visibility-unknown::after { opacity: 0.3; filter: grayscale(1); }
+.fallback-metric-graphic--weather::before { width: 31px; height: 31px; left: 12px; top: 9px; border: 3px solid currentColor; border-radius: 50%; background: color-mix(in srgb, currentColor 22%, transparent); box-shadow: 0 0 18px color-mix(in srgb, currentColor 34%, transparent); transition: opacity 0.25s, transform 0.25s; }
+.fallback-metric-graphic--weather::after { width: 43px; height: 21px; left: 20px; top: 34px; border: 3px solid currentColor; border-radius: 18px; background: var(--theme-stage); box-shadow: -13px 4px 0 -1px var(--theme-stage), -15px 4px 0 2px currentColor, inset 0 0 13px color-mix(in srgb, currentColor 12%, transparent); transition: opacity 0.25s, transform 0.25s; }
+.fallback-metric-graphic--weather b { width: 3px; height: 9px; left: 27px; top: 59px; border-radius: 4px; opacity: 0; background: currentColor; box-shadow: 11px 0 currentColor, 22px 0 currentColor; }
+.fallback-metric-graphic--weather-clear::after { opacity: 0; transform: translate(8px, 5px) scale(0.7); }
+.fallback-metric-graphic--weather-clear::before { left: 20px; top: 19px; transform: scale(1.2); }
+.fallback-metric-graphic--weather-cloud::before, .fallback-metric-graphic--weather-fog::before { opacity: 0.24; transform: translate(9px, 8px) scale(0.78); }
+.fallback-metric-graphic--weather-rain b, .fallback-metric-graphic--weather-snow b, .fallback-metric-graphic--weather-storm b, .fallback-metric-graphic--weather-fog b { opacity: 0.9; }
+.fallback-metric-graphic--weather-rain b, .fallback-metric-graphic--weather-storm b { transform: skewX(-16deg); animation: weather-rain 1.15s linear infinite; }
+.fallback-metric-graphic--weather-snow b { width: 5px; height: 5px; border-radius: 50%; animation: weather-snow 2.4s ease-in-out infinite; }
+.fallback-metric-graphic--weather-fog b { width: 51px; height: 2px; left: 11px; top: 58px; border-radius: 3px; background: linear-gradient(90deg, transparent, currentColor 20% 80%, transparent); box-shadow: 0 7px color-mix(in srgb, currentColor 72%, transparent); animation: weather-fog 3s ease-in-out infinite; }
+.fallback-metric-graphic--weather-storm b { height: 15px; clip-path: polygon(44% 0, 100% 0, 66% 38%, 100% 38%, 15% 100%, 37% 55%, 0 55%); box-shadow: none; }
 @keyframes fallback-graphic-float {
-  0%,
-  100% {
-    transform: translateY(2px);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
+0%, 100% { transform: translateY(2px); }
+50% { transform: translateY(-3px); }
 }
-
 @keyframes pressure-needle {
-  0%,
-  100% {
-    transform: rotate(29deg);
-  }
-  50% {
-    transform: rotate(55deg);
-  }
+0%, 100% { transform: rotate(29deg); }
+50% { transform: rotate(55deg); }
 }
-
 @keyframes visibility-cloud-drift {
-  0%,
-  100% {
-    margin-left: -3px;
-    filter: brightness(0.86);
-  }
-  50% {
-    margin-left: 4px;
-    filter: brightness(1.12);
-  }
+0%, 100% { margin-left: -3px; filter: brightness(0.86); }
+50% { margin-left: 4px; filter: brightness(1.12); }
 }
-
 @keyframes weather-rain {
-  from {
-    transform: translateY(-3px) skewX(-16deg);
-    opacity: 0;
-  }
-  35% {
-    opacity: 0.9;
-  }
-  to {
-    transform: translateY(4px) skewX(-16deg);
-    opacity: 0;
-  }
+from { transform: translateY(-3px) skewX(-16deg); opacity: 0; }
+35% { opacity: 0.9; }
+to { transform: translateY(4px) skewX(-16deg); opacity: 0; }
 }
-
 @keyframes weather-snow {
-  0%,
-  100% {
-    transform: translateY(-2px);
-    opacity: 0.45;
-  }
-  50% {
-    transform: translateY(4px);
-    opacity: 1;
-  }
+0%, 100% { transform: translateY(-2px); opacity: 0.45; }
+50% { transform: translateY(4px); opacity: 1; }
 }
-
 @keyframes weather-fog {
-  0%,
-  100% {
-    transform: translateX(-3px);
-    opacity: 0.45;
-  }
-  50% {
-    transform: translateX(3px);
-    opacity: 0.9;
-  }
+0%, 100% { transform: translateX(-3px); opacity: 0.45; }
+50% { transform: translateX(3px); opacity: 0.9; }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .fallback-metric-graphic,
-  .fallback-metric-graphic b {
-    animation: none;
-  }
+.fallback-metric-graphic, .fallback-metric-graphic b { animation: none; }
 }
 </style>
