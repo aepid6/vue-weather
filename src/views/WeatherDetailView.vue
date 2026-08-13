@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CITIES } from '@/constants/cities'
+import { WIND_DIRECTIONS } from '@/constants/weatherDisplay'
 import { getCurrentWeatherAPI, getHourlyWeatherAPI } from '@/services/weatherAPI'
 import { formatTemperature, mergeWeatherData } from '@/utils/weather'
 import { useWeatherLoading } from '@/composables/useWeatherLoading'
@@ -89,10 +90,8 @@ const forecastHeightClass = (temperature) => {
 
 const windDirection = computed(() => {
   const degrees = weather.value?.details?.windDirection
-  const directions = ['북', '북동', '동', '남동', '남', '남서', '서', '북서']
-
   if (!Number.isFinite(degrees)) return '--'
-  return directions[Math.round(degrees / 45) % directions.length]
+  return WIND_DIRECTIONS[Math.round(degrees / 45) % WIND_DIRECTIONS.length]
 })
 
 const detailItems = computed(() => {

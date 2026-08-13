@@ -8,7 +8,9 @@ import shortsIcon from '@/assets/clothes/shorts.svg'
 import pantsIcon from '@/assets/clothes/pants.svg'
 import jacketIcon from '@/assets/clothes/jacket.svg'
 import coatIcon from '@/assets/clothes/coat.svg'
-import { getCitySceneType } from '@/constants/cityScene'
+import { CITY_SCENE_LABELS, getCitySceneType } from '@/constants/cityScene'
+import { OUTFIT_PALETTES } from '@/constants/outfit'
+import { DEFAULT_WEATHER_EMOJI, WEATHER_EMOJIS } from '@/constants/weatherDisplay'
 
 const props = defineProps({
   city: {
@@ -17,18 +19,10 @@ const props = defineProps({
   },
 })
 
-const citySceneLabels = {
-  island: '섬과 바람',
-  heritage: '역사 도시',
-  port: '항구 도시',
-  mountain: '산악 도시',
-  city: '도심 풍경',
-}
-
 const cityLandmark = computed(() => {
   const type = getCitySceneType(props.city?.id)
 
-  return { type, label: citySceneLabels[type] }
+  return { type, label: CITY_SCENE_LABELS[type] }
 })
 
 const temperatureChangeText = computed(() => {
@@ -44,23 +38,14 @@ const isTemperatureUpdating = ref(false)
 const outfitPalette = ref(0)
 let updateTimer
 
-const outfitPalettes = [
-  { top: '#f1f0eb', bottom: '#202b42', outer: '#b9a387', accent: '#ffffff' },
-  { top: '#a9c7dc', bottom: '#30343b', outer: '#26344a', accent: '#edf7fc' },
-  { top: '#d8c8ae', bottom: '#25272a', outer: '#6d5948', accent: '#f7f1e7' },
-  { top: '#87927a', bottom: '#eee7d8', outer: '#333a35', accent: '#f8f5ed' },
-  { top: '#b9bab8', bottom: '#35516d', outer: '#8a7c6c', accent: '#f4f4f2' },
-  { top: '#26364d', bottom: '#d5d0c6', outer: '#a8a198', accent: '#eef3f8' },
-]
-
-outfitPalette.value = Math.floor(Math.random() * outfitPalettes.length)
+outfitPalette.value = Math.floor(Math.random() * OUTFIT_PALETTES.length)
 
 const refreshOutfitPalette = () => {
-  if (outfitPalettes.length < 2) return
+  if (OUTFIT_PALETTES.length < 2) return
 
   let nextPalette = outfitPalette.value
   while (nextPalette === outfitPalette.value) {
-    nextPalette = Math.floor(Math.random() * outfitPalettes.length)
+    nextPalette = Math.floor(Math.random() * OUTFIT_PALETTES.length)
   }
   outfitPalette.value = nextPalette
 }
@@ -68,7 +53,7 @@ const refreshOutfitPalette = () => {
 const outfit = computed(() => {
   const high = props.city?.todayHigh
   const low = props.city?.todayLow
-  const palette = outfitPalettes[outfitPalette.value]
+  const palette = OUTFIT_PALETTES[outfitPalette.value]
 
   let type = 'sweater'
   let label = '니트와 긴바지'
@@ -186,19 +171,7 @@ const fallbackWeatherItems = computed(() => [
   },
 ])
 
-const weatherEmoji = (status) =>
-  ({
-    '맑음': '☀️',
-    '대체로 맑음': '🌤️',
-    '구름 조금': '⛅',
-    '흐림': '☁️',
-    '안개': '🌫️',
-    '이슬비': '🌦️',
-    '비': '🌧️',
-    '강한 비': '🌧️',
-    '눈': '🌨️',
-    '뇌우': '⛈️',
-  })[status] || '☁️'
+const weatherEmoji = (status) => WEATHER_EMOJIS[status] || DEFAULT_WEATHER_EMOJI
 
 const clothingIconClass = (icon) =>
   ({

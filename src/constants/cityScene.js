@@ -16,6 +16,14 @@ export const HERITAGE_CITY_IDS = [
 
 export const ISLAND_CITY_IDS = ['jeju', 'seogwipo']
 
+export const CITY_SCENE_LABELS = {
+  island: '섬과 바람',
+  heritage: '역사 도시',
+  port: '항구 도시',
+  mountain: '산악 도시',
+  city: '도심 풍경',
+}
+
 // 주민등록인구 약 20만 명 미만인 시·군을 소도시로 분류합니다.
 export const SMALL_CITY_IDS = [
   'eumseong', 'jincheon', 'jeongeup', 'gimcheon',

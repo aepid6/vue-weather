@@ -1,20 +1,21 @@
 import axios from 'axios'
 import { CITIES } from '@/constants/cities'
 import { getWeatherStatus } from '@/constants/weatherCode'
+import {
+  AIR_POLLUTION_API_URL,
+  CURRENT_WEATHER_API_URL,
+  CURRENT_WEATHER_CACHE_KEY,
+  HOURLY_WEATHER_API_URL,
+  HOURLY_WEATHER_CACHE_KEY,
+  WEATHER_CACHE_DURATION,
+  WEATHER_REQUEST_TIMEOUT,
+} from '@/constants/api'
 import { useNotificationStore } from '@/stores/notification'
 import { notify } from '@/utils/notification'
 
-const currentWeatherAPIURL = 'https://api.openweathermap.org/data/2.5/weather'
-const airPollutionAPIURL = 'https://api.openweathermap.org/data/2.5/air_pollution'
-const hourlyWeatherAPIURL = 'https://api.open-meteo.com/v1/forecast'
-const weatherCacheDuration = 15 * 60 * 1000
-const requestTimeout = 8000
-const currentWeatherCacheKey = 'weather-current-cache'
-const hourlyWeatherCacheKey = 'weather-hourly-cache'
-
 const currentWeatherAPI = axios.create({
-  baseURL: currentWeatherAPIURL,
-  timeout: requestTimeout,
+  baseURL: CURRENT_WEATHER_API_URL,
+  timeout: WEATHER_REQUEST_TIMEOUT,
   params: {
     appid: import.meta.env.WEATHER_API_KEY,
     units: 'metric',
@@ -23,8 +24,8 @@ const currentWeatherAPI = axios.create({
 })
 
 const hourlyWeatherAPI = axios.create({
-  baseURL: hourlyWeatherAPIURL,
-  timeout: requestTimeout,
+  baseURL: HOURLY_WEATHER_API_URL,
+  timeout: WEATHER_REQUEST_TIMEOUT,
 })
 
 const readWeatherCache = (key) => {
@@ -48,10 +49,10 @@ const writeWeatherCache = (key, response) => {
   return cache
 }
 
-const isFreshCache = (cache) => cache && Date.now() - cache.savedAt < weatherCacheDuration
+const isFreshCache = (cache) => cache && Date.now() - cache.savedAt < WEATHER_CACHE_DURATION
 
-let currentWeatherCache = readWeatherCache(currentWeatherCacheKey)
-let hourlyWeatherCache = readWeatherCache(hourlyWeatherCacheKey)
+let currentWeatherCache = readWeatherCache(CURRENT_WEATHER_CACHE_KEY)
+let hourlyWeatherCache = readWeatherCache(HOURLY_WEATHER_CACHE_KEY)
 let currentWeatherBatchRequest = null
 let hourlyWeatherBatchRequest = null
 let completedCurrentRequests = 0
@@ -176,7 +177,7 @@ export const getAllCurrentWeatherAPI = async ({ force = false, onProgress } = {}
           }
 
           const response = { data }
-          currentWeatherCache = writeWeatherCache(currentWeatherCacheKey, response)
+          currentWeatherCache = writeWeatherCache(CURRENT_WEATHER_CACHE_KEY, response)
           return response
         })
         .finally(() => {
@@ -203,7 +204,7 @@ export const getCurrentWeatherAPI = async (city) => {
 }
 
 export const getAirPollutionAPI = async (city) => {
-  const response = await axios.get(airPollutionAPIURL, {
+  const response = await axios.get(AIR_POLLUTION_API_URL, {
     params: {
       lat: city.lat,
       lon: city.lon,
@@ -246,7 +247,7 @@ export const getAllHourlyWeatherAPI = async ({ force = false, onProgress } = {})
         })
         .then((response) => {
           const normalizedResponse = { data: response.data }
-          hourlyWeatherCache = writeWeatherCache(hourlyWeatherCacheKey, normalizedResponse)
+          hourlyWeatherCache = writeWeatherCache(HOURLY_WEATHER_CACHE_KEY, normalizedResponse)
           emitHourlyProgress(1)
           return normalizedResponse
         })

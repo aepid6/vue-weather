@@ -6,6 +6,7 @@ import TOAST from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
 import { useThemeStore } from '@/stores/theme'
 import { onNotification } from '@/utils/notification'
+import { THEME_OPTIONS } from '@/constants/theme'
 
 const themeStore = useThemeStore()
 const { themePreference, resolvedTheme } = storeToRefs(themeStore)
@@ -18,13 +19,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => removeNotificationListener?.())
 
-const themeOptions = [
-  { value: 'auto', label: '자동' },
-  { value: 'morning', label: '아침' },
-  { value: 'afternoon', label: '낮' },
-  { value: 'evening', label: '저녁' },
-  { value: 'night', label: '밤' },
-]
 </script>
 
 <template>
@@ -67,7 +61,7 @@ const themeOptions = [
         <span class="sr-only">테마 선택</span>
         <SELECT
           v-model="themePreference"
-          :options="themeOptions"
+          :options="THEME_OPTIONS"
           optionLabel="label"
           optionValue="value"
           aria-label="테마 선택"
